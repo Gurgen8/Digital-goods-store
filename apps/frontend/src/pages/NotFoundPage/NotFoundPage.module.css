@@ -1,0 +1,14 @@
+.wrap {
+  padding: 40px 0;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 34px;
+  letter-spacing: -0.04em;
+}
+
+.text {
+  margin: 0 0 14px;
+  color: var(--color-muted);
+}

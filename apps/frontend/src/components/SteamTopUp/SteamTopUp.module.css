@@ -1,0 +1,226 @@
+.section {
+  margin-top: 0;
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-4);
+}
+
+/* Single unified horizontal card */
+.card {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* ── Separator ── */
+.sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--color-border);
+  margin: 0 14px;
+  flex-shrink: 0;
+}
+
+/* ── 1. Brand block ── */
+.brandBlock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.brandIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.brandInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.brandRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brandName {
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.badge {
+  background: #d4f5e0;
+  color: #1a8a45;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.promoBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  color: var(--color-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ── 2. Login block — no border, blends into card bg ── */
+.loginBlock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  padding: 10px 0;
+}
+
+.fieldIcon {
+  flex-shrink: 0;
+}
+
+.loginInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.loginInput::placeholder {
+  color: var(--color-muted);
+}
+
+.infoBtn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+/* ── 3. Amount block ── */
+.amountBlock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 0 4px;
+}
+
+.amountIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+}
+
+.amountLabel {
+  color: var(--color-muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.amountInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 52px;
+  font-weight: 750;
+  font-size: 15px;
+  letter-spacing: -0.02em;
+  text-align: right;
+}
+
+.amountCur {
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+/* ── 4. Currency segmented ── */
+.segmented {
+  display: inline-flex;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  padding: 3px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.segBtn {
+  border: none;
+  background: transparent;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-muted);
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.segBtnActive {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* ── 5. Pay button ── */
+.payBtn {
+  margin-left: 12px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 13px 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 180ms ease;
+}
+
+.payBtn:hover {
+  opacity: 0.88;
+}
+
+@media (max-width: 900px) {
+  .card {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sep {
+    display: none;
+  }
+
+  .loginBlock {
+    width: 100%;
+  }
+
+  .payBtn {
+    width: 100%;
+    text-align: center;
+    margin-left: 0;
+  }
+}

@@ -1,0 +1,19 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    environment:
+      - BACKEND_PORT=3001
+    ports:
+      - "3001:3001"
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    environment:
+      - VITE_API_URL=http://backend:3001
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend

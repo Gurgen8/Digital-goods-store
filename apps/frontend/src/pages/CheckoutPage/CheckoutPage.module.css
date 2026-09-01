@@ -1,0 +1,75 @@
+.page {
+  padding-bottom: 40px;
+}
+
+.content {
+  margin-top: var(--space-8);
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--space-6);
+}
+
+.card {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+  background: #ffffff;
+  box-shadow: var(--shadow-card);
+  padding: 18px;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+
+.productRow {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.thumb {
+  width: 92px;
+  height: 72px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.pTitle {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.pSub {
+  color: var(--color-muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.price {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--color-accent);
+}
+
+.actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hint {
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
