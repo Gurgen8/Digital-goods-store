@@ -14,6 +14,7 @@ import ProductGrid from "../../components/ProductGrid/ProductGrid"
 import Reviews from "../../components/Reviews/Reviews"
 import ServiceIcons from "../../components/ServiceIcons/ServiceIcons"
 import SteamTopUp from "../../components/SteamTopUp/SteamTopUp"
+import { filterIcons } from "../../assets/filters"
 import styles from "./HomePage.module.css"
 
 export default function HomePage() {
@@ -42,11 +43,13 @@ export default function HomePage() {
 
   const chips = useMemo(
     () => [
-      { label: "Предметы", icon: <Icon name="bolt" size={16} /> },
-      { label: "Аккаунты", icon: <Icon name="user" size={16} /> },
-      { label: "Ключи", icon: <Icon name="star" size={16} /> },
-      { label: "Игровая валюта", icon: <Icon name="bolt" size={16} /> },
-      { label: "Другое", icon: <Icon name="chevronRight" size={16} /> }
+      { label: "Донат", icon: <img src={filterIcons.donate} alt="" /> },
+      { label: "Подписки", icon: <img src={filterIcons.subscribes} alt="" /> },
+      { label: "Предметы", icon: <img src={filterIcons.items} alt="" /> },
+      { label: "Аккаунты", icon: <img src={filterIcons.accounts} alt="" /> },
+      { label: "Ключи", icon: <img src={filterIcons.keys} alt="" /> },
+      { label: "Игровая валюта", icon: <img src={filterIcons.game_valut} alt="" /> },
+      { label: "Другое", icon: <img src={filterIcons.other} alt="" /> }
     ],
     []
   )
@@ -74,12 +77,15 @@ export default function HomePage() {
           <SteamTopUp />
         </div>
 
-        <div className={styles.chips} aria-label="Фильтры">
-          {chips.map((c) => (
-            <Chip key={c.label} icon={c.icon}>
-              {c.label}
-            </Chip>
-          ))}
+        <div className={styles.filtersRow}>
+          <h2 className={styles.sectionTitle}>Популярные товары</h2>
+          <div className={styles.chips} aria-label="Фильтры">
+            {chips.map((c, i) => (
+              <Chip key={c.label} icon={c.icon} active={i === 0}>
+                {c.label}
+              </Chip>
+            ))}
+          </div>
         </div>
 
         <div className={styles.state}>
@@ -100,7 +106,31 @@ export default function HomePage() {
           ) : null}
 
           {!error && products && products.length > 0 ? (
-            <ProductGrid products={products} onBuy={onBuy} busyId={busyId} />
+            <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
+          ) : null}
+        </div>
+
+        <div className={styles.sectionHeaderRow}>
+          <h2 className={styles.sectionTitle}>Рекомендованные товары</h2>
+          <button className={styles.showAllBtn}>Показать все</button>
+        </div>
+        
+        <div className={styles.state}>
+          {!error && !products ? <SkeletonGrid /> : null}
+          {!error && products && products.length > 0 ? (
+            <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
+          ) : null}
+        </div>
+
+        <div className={styles.sectionHeaderRow}>
+          <h2 className={styles.sectionTitle}>Другие товары</h2>
+          <button className={styles.showAllBtn}>Показать все</button>
+        </div>
+        
+        <div className={styles.state}>
+          {!error && !products ? <SkeletonGrid /> : null}
+          {!error && products && products.length > 0 ? (
+            <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
           ) : null}
         </div>
 

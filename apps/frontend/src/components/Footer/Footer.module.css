@@ -1,12 +1,15 @@
 .footer {
-  background: #ffffff;
-  padding: 0;
+  background: transparent;
+  padding: 24px var(--container-padding) 40px;
 }
 
 .inner {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 var(--container-padding);
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  padding: 8px 32px;
 }
 
 /* Nav links */
@@ -34,7 +37,7 @@
 /* Divider */
 .divider {
   height: 1px;
-  background: var(--color-border);
+  background: rgba(0, 0, 0, 0.06);
 }
 
 /* Social + Payment row */

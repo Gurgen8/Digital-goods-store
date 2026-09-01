@@ -34,22 +34,21 @@
 
 .showAllBtn {
   flex-shrink: 0;
-  height: 36px;
+  height: 34px;
   padding: 0 16px;
-  border-radius: var(--radius-control);
-  border: 1px solid var(--color-border);
-  background: #ffffff;
-  color: var(--color-text);
+  border-radius: 10px;
+  border: none;
+  background: #F4F5F7;
+  color: #1F2937;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.15s, border-color 0.15s;
+  transition: opacity 0.15s;
 }
 
 .showAllBtn:hover {
-  background: var(--color-surface);
-  border-color: #d0d5dd;
+  opacity: 0.8;
 }
 
 .grid {

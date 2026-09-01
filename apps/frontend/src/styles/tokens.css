@@ -1,13 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
 :root {
   --color-background: #ffffff;
-  --color-surface: #f6f7f9;
-  --color-surface-2: #eef1f5;
-  --color-text: #121417;
-  --color-muted: #6e7682;
-  --color-border: #e7eaf0;
-  --color-primary: #0b0b0b;
+  --color-surface: #f4f5f7;
+  --color-surface-2: #1f2937;
+  --color-text: #14181d;
+  --color-muted: #8a94a6;
+  --color-border: #9ca3af;
+  --color-primary: #000000;
   --color-primary-contrast: #ffffff;
-  --color-accent: #4fb35a;
+  --color-accent: #4c9a2a;
 
   --shadow-card: 0 10px 24px rgba(0, 0, 0, 0.08);
   --shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.06);
@@ -27,7 +29,7 @@
   --space-8: 32px;
   --space-10: 40px;
 
-  --font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+  --font-family: "Montserrat", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
 }

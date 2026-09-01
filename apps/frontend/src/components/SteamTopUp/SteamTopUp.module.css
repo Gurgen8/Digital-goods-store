@@ -1,14 +1,15 @@
 .section {
   margin-top: 0;
-  border-top: 1px solid var(--color-border);
-  padding: var(--space-4);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 16px 20px;
 }
 
 /* Single unified horizontal card */
 .card {
   display: flex;
   align-items: center;
-  gap: 0;
+  justify-content: space-between;
+  gap: 16px;
   border-radius: 0;
   border: 0;
   background: transparent;
@@ -16,34 +17,26 @@
   padding: 0;
 }
 
-/* ── Separator ── */
-.sep {
-  width: 1px;
-  align-self: stretch;
-  background: var(--color-border);
-  margin: 0 14px;
-  flex-shrink: 0;
-}
-
 /* ── 1. Brand block ── */
 .brandBlock {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
 .brandIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
   flex-shrink: 0;
 }
 
 .brandInfo {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  align-items: flex-start;
 }
 
 .brandRow {
@@ -56,14 +49,15 @@
   font-weight: 700;
   font-size: 14px;
   white-space: nowrap;
+  color: var(--color-text);
 }
 
 .badge {
-  background: #d4f5e0;
-  color: #1a8a45;
+  background: #6EB83F;
+  color: #fff;
   font-size: 11px;
   font-weight: 700;
-  border-radius: 6px;
+  border-radius: 12px;
   padding: 2px 6px;
 }
 
@@ -72,27 +66,32 @@
   align-items: center;
   gap: 4px;
   border: 0;
-  background: transparent;
-  padding: 0;
+  background: rgba(38, 139, 243, 0.1);
+  border-radius: 8px;
+  padding: 4px 8px;
   font-size: 12px;
-  color: var(--color-muted);
+  font-weight: 600;
+  color: #000000;
   cursor: pointer;
   white-space: nowrap;
 }
 
-/* ── 2. Login block — no border, blends into card bg ── */
+/* ── 2. Login block ── */
 .loginBlock {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex: 1;
   min-width: 0;
-  background: transparent;
-  padding: 10px 0;
+  background: #f2f4f7;
+  border-radius: 12px;
+  padding: 0 16px;
+  height: 54px;
 }
 
 .fieldIcon {
   flex-shrink: 0;
+  color: #9aa1ae;
 }
 
 .loginInput {
@@ -102,11 +101,12 @@
   outline: none;
   background: transparent;
   font-size: 14px;
-  color: var(--color-muted);
+  font-weight: 600;
+  color: var(--color-text);
 }
 
 .loginInput::placeholder {
-  color: var(--color-muted);
+  color: #9aa1ae;
 }
 
 .infoBtn {
@@ -116,92 +116,121 @@
   cursor: pointer;
   display: inline-flex;
   flex-shrink: 0;
+  opacity: 1;
+  transition: opacity 150ms ease;
 }
 
-/* ── 3. Amount block ── */
-.amountBlock {
+.infoBtn:hover {
+  opacity: 0.8;
+}
+
+/* ── 3. Amount and Currency ── */
+.amountContainer {
   display: flex;
   align-items: center;
-  gap: 6px;
+  background: #f2f4f7;
+  border-radius: 12px;
+  padding: 0 12px 0 16px;
+  height: 54px;
+  gap: 12px;
   flex-shrink: 0;
-  padding: 0 4px;
 }
 
-.amountIcon {
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+.amountIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.amountDetails {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .amountLabel {
-  color: var(--color-muted);
-  font-size: 13px;
-  white-space: nowrap;
+  color: #9aa1ae;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.amountInputRow {
+  display: flex;
+  align-items: baseline;
 }
 
 .amountInput {
   border: none;
   outline: none;
   background: transparent;
-  width: 52px;
-  font-weight: 750;
+  width: 40px;
+  font-weight: 800;
   font-size: 15px;
-  letter-spacing: -0.02em;
-  text-align: right;
+  text-align: left;
+  color: var(--color-text);
+  padding: 0;
 }
 
 .amountCur {
-  color: var(--color-muted);
-  font-size: 14px;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--color-text);
 }
 
 /* ── 4. Currency segmented ── */
 .segmented {
   display: inline-flex;
-  border-radius: 10px;
-  border: 1px solid var(--color-border);
-  background: #ffffff;
-  padding: 3px;
+  border-radius: 8px;
+  background: transparent;
+  padding: 0;
+  gap: 4px;
   flex-shrink: 0;
   margin-left: 8px;
 }
 
 .segBtn {
   border: none;
-  background: transparent;
-  padding: 7px 10px;
-  border-radius: 8px;
+  background: #e4e7ec;
+  padding: 6px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
-  color: var(--color-muted);
-  transition: background 150ms ease, color 150ms ease;
+  color: #9aa1ae;
+  transition: all 150ms ease;
+  min-width: 28px;
+  text-align: center;
 }
 
 .segBtnActive {
-  background: var(--color-primary);
-  color: var(--color-primary-contrast);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  background: #000;
+  color: #fff;
 }
 
 /* ── 5. Pay button ── */
 .payBtn {
-  margin-left: 12px;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
-  border-radius: 14px;
-  background: var(--color-primary);
-  color: var(--color-primary-contrast);
+  border-radius: 12px;
+  background: #000;
+  color: #fff;
   font-weight: 700;
-  font-size: 14px;
-  padding: 13px 20px;
+  font-size: 15px;
+  padding: 0 24px;
+  height: 54px;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 180ms ease;
+  transition: opacity 180ms ease, transform 120ms ease;
 }
 
 .payBtn:hover {
-  opacity: 0.88;
+  opacity: 0.85;
 }
 
 @media (max-width: 900px) {
@@ -210,17 +239,17 @@
     gap: 12px;
   }
 
-  .sep {
-    display: none;
-  }
-
   .loginBlock {
     width: 100%;
+  }
+
+  .amountContainer {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .payBtn {
     width: 100%;
     text-align: center;
-    margin-left: 0;
   }
 }

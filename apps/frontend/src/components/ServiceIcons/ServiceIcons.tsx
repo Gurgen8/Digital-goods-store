@@ -22,9 +22,6 @@ export default function ServiceIcons() {
 
   return (
     <section className={styles.section} aria-label="Сервисы">
-      <div className={styles.titleRow}>
-        <h2 className={styles.title}>Сервисы</h2>
-      </div>
       <div className={styles.row}>
         {items.map((it: { label: string; icon: BrandName }) => (
           <button key={it.label} className={styles.tile} type="button">

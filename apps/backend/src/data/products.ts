@@ -8,8 +8,8 @@ const img = (prompt: string) =>
 export const products: Product[] = [
   {
     id: "doom-2016-steam-key",
-    title: "DOOM 2016",
-    subtitle: "STEAM KEY • РФ+СНГ",
+    title: "💥 DOOM 2016 💀 STEAM KEY 🔑",
+    subtitle: "РФ+СНГ",
     priceRub: 990,
     oldPriceRub: 1990,
     imageUrl: img("modern dark sci fi game cover art, red accent lighting, bold composition")

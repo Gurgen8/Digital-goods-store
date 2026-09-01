@@ -13,9 +13,6 @@ export default function ProductGrid({
 }) {
   return (
     <section id="catalog" className={styles.section} aria-label="Каталог">
-      <div className={styles.titleRow}>
-        <h2 className={styles.title}>Каталог</h2>
-      </div>
 
       <div className={styles.grid}>
         {products.map((p) => (
