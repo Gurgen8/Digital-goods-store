@@ -1,5 +1,5 @@
 import type { Product } from "@repo/shared"
-import Button from "../Button/Button"
+import Button from "src/components/Button/Button"
 import styles from "./ProductCard.module.css"
 
 export default function ProductCard({

@@ -1,4 +1,4 @@
-import styles from "./Feedback.module.css"
+import styles from "src/components/Feedback/Feedback.module.css"
 
 export default function SkeletonGrid() {
   return (

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
-import Container from "../../components/Container/Container"
-import Footer from "../../components/Footer/Footer"
-import Header from "../../components/Header/Header"
+import Container from "src/components/Container/Container"
+import Footer from "src/components/Footer/Footer"
+import Header from "src/components/Header/Header"
 import styles from "./NotFoundPage.module.css"
 
 export default function NotFoundPage() {

@@ -1,8 +1,8 @@
 .card {
   border-radius: var(--radius-card);
   border: none;
-  background: #ffffff;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  background: var(--color-background);
+  box-shadow: 0 4px 24px var(--color-black-alpha-06);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -54,7 +54,7 @@
   display: inline-flex;
   align-items: center;
   gap: 1px;
-  color: #000000;
+  color: var(--color-primary);
 }
 
 .ratingNum {
@@ -73,9 +73,9 @@
 /* Text bubble */
 .bubble {
   border-radius: 16px;
-  background: #F1F2F4;
+  background: var(--color-surface-3);
   padding: 12px 14px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -123,8 +123,8 @@
   gap: 4px;
   border-radius: var(--radius-pill);
   padding: 7px 14px;
-  background: #111111;
-  color: #ffffff;
+  background: var(--color-surface-dark);
+  color: var(--color-background);
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;

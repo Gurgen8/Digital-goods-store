@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import ReviewCard from "./ReviewCard"
+import ReviewCard from "./components/ReviewCard/ReviewCard"
 import styles from "./Reviews.module.css"
 
 export default function Reviews() {

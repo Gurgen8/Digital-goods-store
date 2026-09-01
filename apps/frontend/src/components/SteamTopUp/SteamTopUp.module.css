@@ -1,6 +1,6 @@
 .section {
   margin-top: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--color-black-alpha-06);
   padding: 16px 20px;
 }
 
@@ -53,8 +53,8 @@
 }
 
 .badge {
-  background: #6EB83F;
-  color: #fff;
+  background: var(--color-badge);
+  color: var(--color-background);
   font-size: 11px;
   font-weight: 700;
   border-radius: 12px;
@@ -66,12 +66,12 @@
   align-items: center;
   gap: 4px;
   border: 0;
-  background: rgba(38, 139, 243, 0.1);
+  background: var(--color-promo-bg);
   border-radius: 8px;
   padding: 4px 8px;
   font-size: 12px;
   font-weight: 600;
-  color: #000000;
+  color: var(--color-primary);
   cursor: pointer;
   white-space: nowrap;
 }
@@ -83,7 +83,7 @@
   gap: 10px;
   flex: 1;
   min-width: 0;
-  background: #f2f4f7;
+  background: var(--color-surface-alt);
   border-radius: 12px;
   padding: 0 16px;
   height: 54px;
@@ -91,7 +91,7 @@
 
 .fieldIcon {
   flex-shrink: 0;
-  color: #9aa1ae;
+  color: var(--color-muted-2);
 }
 
 .loginInput {
@@ -106,7 +106,7 @@
 }
 
 .loginInput::placeholder {
-  color: #9aa1ae;
+  color: var(--color-muted-2);
 }
 
 .infoBtn {
@@ -128,7 +128,7 @@
 .amountContainer {
   display: flex;
   align-items: center;
-  background: #f2f4f7;
+  background: var(--color-surface-alt);
   border-radius: 12px;
   padding: 0 12px 0 16px;
   height: 54px;
@@ -150,7 +150,7 @@
 }
 
 .amountLabel {
-  color: #9aa1ae;
+  color: var(--color-muted-2);
   font-size: 11px;
   font-weight: 600;
   line-height: 1;
@@ -193,21 +193,21 @@
 
 .segBtn {
   border: none;
-  background: #e4e7ec;
+  background: var(--color-surface-btn);
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
-  color: #9aa1ae;
+  color: var(--color-muted-2);
   transition: all 150ms ease;
   min-width: 28px;
   text-align: center;
 }
 
 .segBtnActive {
-  background: #000;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-background);
 }
 
 /* ── 5. Pay button ── */
@@ -218,8 +218,8 @@
   justify-content: center;
   border: 0;
   border-radius: 12px;
-  background: #000;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-background);
   font-weight: 700;
   font-size: 15px;
   padding: 0 24px;

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import type { Order } from "@repo/shared"
-import { getRecoveryOrders, retryDelivery } from "../../api/shopApi"
-import Button from "../../components/Button/Button"
-import Container from "../../components/Container/Container"
-import Spinner from "../../components/Feedback/Spinner"
-import Footer from "../../components/Footer/Footer"
-import Header from "../../components/Header/Header"
+import { getRecoveryOrders, retryDelivery } from "src/api/shopApi"
+import Button from "src/components/Button/Button"
+import Container from "src/components/Container/Container"
+import Spinner from "src/components/Feedback/components/Spinner/Spinner"
+import Footer from "src/components/Footer/Footer"
+import Header from "src/components/Header/Header"
 import styles from "./AdminPage.module.css"
 
 export default function AdminPage() {

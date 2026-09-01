@@ -10,7 +10,7 @@
   border-radius: var(--radius-card);
   border: none;
   background: var(--color-background);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 24px var(--color-black-alpha-06);
   overflow: hidden;
 }
 
@@ -28,7 +28,7 @@
   font-weight: 700;
   line-height: 30px;
   letter-spacing: 0;
-  color: #1F2937;
+  color: var(--color-surface-2);
   white-space: nowrap;
 }
 
@@ -50,8 +50,8 @@
 
 .errorBox {
   border-radius: var(--radius-card);
-  border: 1px solid rgba(255, 0, 0, 0.2);
-  background: rgba(255, 0, 0, 0.04);
+  border: 1px solid var(--color-error-border);
+  background: var(--color-error-bg);
   padding: 14px;
   color: var(--color-text);
 }
@@ -74,14 +74,14 @@
 }
 
 .showAllBtn {
-  background: #F4F5F7;
+  background: var(--color-surface);
   border: none;
   border-radius: 10px;
   height: 34px;
   padding: 0 16px;
   font-size: 14px;
   font-weight: 600;
-  color: #1F2937;
+  color: var(--color-surface-2);
   cursor: pointer;
   transition: opacity 150ms ease;
 }

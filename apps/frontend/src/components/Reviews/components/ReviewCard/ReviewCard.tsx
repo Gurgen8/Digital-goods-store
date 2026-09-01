@@ -1,4 +1,4 @@
-import Icon from "../Icon/Icon"
+import Icon from "src/components/Icon/Icon"
 import styles from "./ReviewCard.module.css"
 
 type Props = {

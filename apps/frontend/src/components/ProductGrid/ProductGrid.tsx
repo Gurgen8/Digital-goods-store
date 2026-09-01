@@ -1,5 +1,5 @@
 import type { Product } from "@repo/shared"
-import ProductCard from "../ProductCard/ProductCard"
+import ProductCard from "src/components/ProductCard/ProductCard"
 import styles from "./ProductGrid.module.css"
 
 export default function ProductGrid({

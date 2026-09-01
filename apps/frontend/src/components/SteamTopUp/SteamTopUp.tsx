@@ -52,8 +52,8 @@ export default function SteamTopUp() {
           />
           <button className={styles.infoBtn} type="button" aria-label="Информация">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" fill="#9aa1ae" />
-              <path d="M12 7v2M12 11v6" stroke="#fff" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="12" cy="12" r="10" fill="var(--color-muted-2)" />
+              <path d="M12 7v2M12 11v6" stroke="var(--color-background)" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </button>
         </div>
@@ -62,8 +62,8 @@ export default function SteamTopUp() {
         <div className={styles.amountContainer}>
           <div className={styles.amountIconWrapper}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="12" fill="#9aa1ae" />
-              <path d="M11 7V17H13V13H14C15.6569 13 17 11.6569 17 10C17 8.34315 15.6569 7 14 7H11ZM13 9H14C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H13V9Z" fill="#fff" />
+              <circle cx="12" cy="12" r="12" fill="var(--color-muted-2)" />
+              <path transform="translate(-2, 0)" d="M11 7V17H13V13H14C15.6569 13 17 11.6569 17 10C17 8.34315 15.6569 7 14 7H11ZM13 9H14C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H13V9Z" fill="var(--color-background)" />
             </svg>
           </div>
 

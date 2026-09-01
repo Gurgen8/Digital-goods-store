@@ -1,8 +1,8 @@
 .card {
   border-radius: var(--radius-card);
   border: none;
-  background: #ffffff;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  background: var(--color-background);
+  box-shadow: 0 4px 24px var(--color-black-alpha-06);
   overflow: hidden;
   transition: transform 180ms ease, box-shadow 180ms ease;
   display: flex;
@@ -12,7 +12,7 @@
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px var(--color-black-alpha-10);
 }
 
 .media {

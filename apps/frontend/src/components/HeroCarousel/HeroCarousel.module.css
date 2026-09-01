@@ -6,8 +6,8 @@
   position: relative;
   border-radius: 24px;
   overflow: hidden;
-  background: #0b0b0b;
-  color: #fff;
+  background: var(--color-surface-dark-2);
+  color: var(--color-background);
   min-height: 220px;
   box-shadow: var(--shadow-card);
 }
@@ -36,7 +36,7 @@
 
 .subtitle {
   margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--color-white-alpha-72);
   font-size: 15px;
   line-height: 1.4;
   max-width: 44ch;
@@ -48,10 +48,10 @@
   align-items: center;
   gap: 10px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-white-alpha-22);
+  background: var(--color-white-alpha-10);
   padding: 11px 16px;
-  color: #fff;
+  color: var(--color-background);
   font-size: 14px;
   font-weight: 600;
   width: fit-content;
@@ -64,7 +64,7 @@
 }
 
 .cta:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--color-white-alpha-18);
 }
 
 .visual {
@@ -73,12 +73,12 @@
   border-radius: 18px;
   background: radial-gradient(
       circle at 30% 30%,
-      rgba(79, 179, 90, 0.3),
+      var(--color-accent-alpha-30),
       transparent 60%
     ),
     radial-gradient(
       circle at 70% 70%,
-      rgba(255, 255, 255, 0.1),
+      var(--color-white-alpha-10),
       transparent 55%
     );
 }
@@ -98,8 +98,8 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--color-white-alpha-20);
+  background: var(--color-white-alpha-95);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -109,7 +109,7 @@
 }
 
 .navButton:hover {
-  background: #ffffff;
+  background: var(--color-background);
   transform: scale(1.05);
 }
 
@@ -123,14 +123,14 @@
   gap: 6px;
   padding: 6px 10px;
   border-radius: var(--radius-pill);
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--color-black-alpha-30);
 }
 
 .dot {
   width: 7px;
   height: 7px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--color-white-alpha-35);
   border: none;
   padding: 0;
   cursor: pointer;
@@ -138,7 +138,7 @@
 }
 
 .dotActive {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--color-white-alpha-95);
   width: 20px;
 }
 

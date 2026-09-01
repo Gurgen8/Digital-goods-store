@@ -45,3 +45,43 @@
     --container-padding: 32px;
   }
 }
+
+:root {
+  --color-surface-alt: #f2f4f7;
+  --color-surface-hover: #e5e7eb;
+  --color-surface-dark: #111111;
+  --color-surface-dark-2: #0b0b0b;
+  --color-surface-btn: #e4e7ec;
+  --color-surface-3: #f1f2f4;
+  --color-surface-4: #f3f5f9;
+  --color-surface-5: #f8f9fa;
+  --color-muted-2: #9aa1ae;
+  --color-muted-3: #727b8e;
+  --color-muted-4: #76829b;
+  --color-text-secondary: #6b7280;
+  --color-input-bg: #f1f3f5;
+  --color-badge: #6eb83f;
+  --color-error: #ef4444;
+  --color-error-bg: rgba(255, 0, 0, 0.04);
+  --color-error-border: rgba(255, 0, 0, 0.2);
+  --color-promo-bg: rgba(38, 139, 243, 0.1);
+  --color-black-alpha-06: rgba(0, 0, 0, 0.06);
+  --color-black-alpha-08: rgba(0, 0, 0, 0.08);
+  --color-black-alpha-10: rgba(0, 0, 0, 0.1);
+  --color-black-alpha-30: rgba(0, 0, 0, 0.3);
+  --color-white-alpha-10: rgba(255, 255, 255, 0.1);
+  --color-white-alpha-18: rgba(255, 255, 255, 0.18);
+  --color-white-alpha-20: rgba(255, 255, 255, 0.2);
+  --color-white-alpha-22: rgba(255, 255, 255, 0.22);
+  --color-white-alpha-35: rgba(255, 255, 255, 0.35);
+  --color-white-alpha-72: rgba(255, 255, 255, 0.72);
+  --color-white-alpha-95: rgba(255, 255, 255, 0.95);
+  --color-accent-alpha-08: rgba(79, 179, 90, 0.08);
+  --color-accent-alpha-30: rgba(79, 179, 90, 0.3);
+  --color-accent-alpha-45: rgba(79, 179, 90, 0.45);
+  --color-accent-hover: #0f9d58;
+  --color-brand-mc-1: #eb001b;
+  --color-brand-mc-2: #f79e1b;
+  --color-brand-tg: #54a9ff;
+  --color-brand-vk: #1a1f71;
+}

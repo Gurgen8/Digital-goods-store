@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import type { MoneyCurrency, Order } from "@repo/shared"
-import { getOrder, payOrder } from "../../api/shopApi"
-import Button from "../../components/Button/Button"
-import Container from "../../components/Container/Container"
-import Spinner from "../../components/Feedback/Spinner"
-import Footer from "../../components/Footer/Footer"
-import Header from "../../components/Header/Header"
+import { getOrder, payOrder } from "src/api/shopApi"
+import Button from "src/components/Button/Button"
+import Container from "src/components/Container/Container"
+import Spinner from "src/components/Feedback/components/Spinner/Spinner"
+import Footer from "src/components/Footer/Footer"
+import Header from "src/components/Header/Header"
 import styles from "./CheckoutPage.module.css"
 
 export default function CheckoutPage() {

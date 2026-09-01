@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import Icon from "../../../Icon/Icon"
+import Icon from "src/components/Icon/Icon"
 import styles from "./CatalogDropdown.module.css"
 
 type Props = {

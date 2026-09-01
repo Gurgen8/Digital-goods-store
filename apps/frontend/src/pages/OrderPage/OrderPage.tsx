@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import type { Order, OrderStatus } from "@repo/shared"
-import { getOrder } from "../../api/shopApi"
-import Button from "../../components/Button/Button"
-import Container from "../../components/Container/Container"
-import Spinner from "../../components/Feedback/Spinner"
-import Footer from "../../components/Footer/Footer"
-import Header from "../../components/Header/Header"
+import { getOrder } from "src/api/shopApi"
+import Button from "src/components/Button/Button"
+import Container from "src/components/Container/Container"
+import Spinner from "src/components/Feedback/components/Spinner/Spinner"
+import Footer from "src/components/Footer/Footer"
+import Header from "src/components/Header/Header"
 import styles from "./OrderPage.module.css"
 
 const labelForStatus = (s: OrderStatus) => {
