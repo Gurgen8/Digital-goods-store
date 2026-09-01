@@ -1,7 +1,7 @@
 import cors from "cors"
 import express from "express"
 import { z } from "zod"
-import type { ApiError, MoneyCurrency, Order, Product } from "@repo/shared"
+import type { ApiError, MoneyCurrency, Order } from "@repo/shared"
 import { products } from "./data/products.js"
 import {
   applyDeliveryOutcome,
@@ -88,69 +88,69 @@ app.get("/api/orders/:id", (req: express.Request, res: express.Response) => {
 app.post(
   "/api/orders/:id/pay",
   async (req: express.Request, res: express.Response) => {
-  const schema = z.object({
-    result: z.enum(["success", "failed"]),
-    currency: z.custom<MoneyCurrency>().optional()
-  })
+    const schema = z.object({
+      result: z.enum(["success", "failed"]),
+      currency: z.custom<MoneyCurrency>().optional()
+    })
 
-  const parsed = schema.safeParse(req.body)
-  if (!parsed.success) {
-    return sendError(res, 422, "Invalid request", "invalid_request")
-  }
+    const parsed = schema.safeParse(req.body)
+    if (!parsed.success) {
+      return sendError(res, 422, "Invalid request", "invalid_request")
+    }
 
-  const current = orders.get(req.params.id)
-  if (!current) return sendError(res, 404, "Order not found", "not_found")
+    const current = orders.get(req.params.id)
+    if (!current) return sendError(res, 404, "Order not found", "not_found")
 
-  if (current.status !== "created") {
-    return sendError(res, 409, "Order payment already processed", "conflict")
-  }
+    if (current.status !== "created") {
+      return sendError(res, 409, "Order payment already processed", "conflict")
+    }
 
-  if (parsed.data.result === "failed") {
-    orders.set(current.id, markPaymentFailed(current))
-    return res.json({ ok: true })
-  }
+    if (parsed.data.result === "failed") {
+      orders.set(current.id, markPaymentFailed(current))
+      return res.json({ ok: true })
+    }
 
-  const paid = markPaid(current)
-  const attempt = paid.deliveryAttempts + 1
-  orders.set(paid.id, incrementDeliveryAttempt(paid))
-  void scheduleDelivery(paid.id, attempt)
+    const paid = markPaid(current)
+    const attempt = paid.deliveryAttempts + 1
+    orders.set(paid.id, incrementDeliveryAttempt(paid))
+    void scheduleDelivery(paid.id, attempt)
 
-  res.json({ ok: true })
+    res.json({ ok: true })
   }
 )
 
 app.get(
   "/api/admin/recovery-orders",
   (_req: express.Request, res: express.Response) => {
-  const list = Array.from(orders.values()).filter(
-    (o) => o.status === "out_of_stock" || o.status === "delivery_failed"
-  )
-  res.json(list satisfies Order[])
+    const list = Array.from(orders.values()).filter(
+      (o) => o.status === "out_of_stock" || o.status === "delivery_failed"
+    )
+    res.json(list satisfies Order[])
   }
 )
 
 app.post(
   "/api/admin/orders/:id/retry-delivery",
   async (req: express.Request, res: express.Response) => {
-  const current = orders.get(req.params.id)
-  if (!current) return sendError(res, 404, "Order not found", "not_found")
+    const current = orders.get(req.params.id)
+    if (!current) return sendError(res, 404, "Order not found", "not_found")
 
-  if (current.status !== "out_of_stock" && current.status !== "delivery_failed") {
-    return sendError(res, 409, "Order is not recoverable", "conflict")
-  }
+    if (current.status !== "out_of_stock" && current.status !== "delivery_failed") {
+      return sendError(res, 409, "Order is not recoverable", "conflict")
+    }
 
-  const paid = {
-    ...current,
-    status: "paid",
-    updatedAt: new Date().toISOString()
-  } satisfies InternalOrder
+    const paid = {
+      ...current,
+      status: "paid",
+      updatedAt: new Date().toISOString()
+    } satisfies InternalOrder
 
-  const bumped = incrementDeliveryAttempt(paid)
-  const attempt = bumped.deliveryAttempts
-  orders.set(bumped.id, bumped)
-  void scheduleDelivery(bumped.id, attempt)
+    const bumped = incrementDeliveryAttempt(paid)
+    const attempt = bumped.deliveryAttempts
+    orders.set(bumped.id, bumped)
+    void scheduleDelivery(bumped.id, attempt)
 
-  res.json({ ok: true })
+    res.json({ ok: true })
   }
 )
 

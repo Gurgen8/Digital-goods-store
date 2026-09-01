@@ -3,7 +3,7 @@ import { useMemo, useState } from "react"
 import type { MoneyCurrency } from "@repo/shared"
 import styles from "./SteamTopUp.module.css"
 import { brandIconSrc } from "src/assets/brands"
-
+import Icon from "src/components/Icon/Icon"
 export default function SteamTopUp() {
   const currencies = useMemo<MoneyCurrency[]>(() => ["$", "₸", "₽"], [])
   const [currency, setCurrency] = useState<MoneyCurrency>("$")
@@ -30,18 +30,14 @@ export default function SteamTopUp() {
             </div>
             <button className={styles.promoBtn} type="button">
               Ввести промокод
-              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{ marginLeft: 2 }}>
-                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <Icon name="chevronDown" size={10} style={{ marginLeft: 2 }} />
             </button>
           </div>
         </div>
 
         {/* 2 — Login field */}
         <div className={styles.loginBlock}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.fieldIcon}>
-            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor" />
-          </svg>
+          <Icon name="account" size={20} className={styles.fieldIcon} />
           <input
             className={styles.loginInput}
             type="text"
@@ -51,20 +47,14 @@ export default function SteamTopUp() {
             aria-label="Логин Steam"
           />
           <button className={styles.infoBtn} type="button" aria-label="Информация">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" fill="var(--color-muted-2)" />
-              <path d="M12 7v2M12 11v6" stroke="var(--color-background)" strokeWidth="2" strokeLinecap="round" />
-            </svg>
+            <Icon name="info" size={16} />
           </button>
         </div>
 
         {/* 3 — Amount and Currency */}
         <div className={styles.amountContainer}>
           <div className={styles.amountIconWrapper}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="12" fill="var(--color-muted-2)" />
-              <text x="12" y="12" fontSize="16" fontWeight="bold" fill="var(--color-background)" textAnchor="middle" dy=".35em">₽</text>
-            </svg>
+            <Icon name="ruble" size={20} />
           </div>
 
           <div className={styles.amountDetails}>

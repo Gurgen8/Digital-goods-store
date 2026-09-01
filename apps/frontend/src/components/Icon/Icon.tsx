@@ -13,6 +13,10 @@ export type IconName =
   | "telegram"
   | "tiktok"
   | "youtube"
+  | "chevronDown"
+  | "account"
+  | "info"
+  | "ruble"
   | "visa"
   | "mir"
   | "mastercard"
@@ -141,6 +145,32 @@ const icons: Record<IconName, React.FC<Omit<IconProps, "name">>> = {
     <svg width={size === 20 ? 11 : size} height={size === 20 ? 8 : size} viewBox="0 0 11 8" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       {title ? <title>{title}</title> : null}
       <path d="M7.51953 0.128906C7.57682 0.10026 7.64128 0.0716147 7.71289 0.0429688C7.78451 0.0143228 7.86328 0 7.94922 0C8.0638 0 8.17122 0.0214844 8.27148 0.0644531C8.37175 0.107422 8.45052 0.171875 8.50781 0.257812L10.8281 3.13672C10.8854 3.19401 10.9284 3.26562 10.957 3.35156C10.9857 3.4375 11 3.52344 11 3.60938C11 3.69531 10.9857 3.77409 10.957 3.8457C10.9284 3.91732 10.8854 3.98177 10.8281 4.03906L8.50781 6.875C8.45052 6.96094 8.37175 7.03255 8.27148 7.08984C8.17122 7.14714 8.0638 7.17578 7.94922 7.17578C7.7487 7.17578 7.58398 7.10417 7.45508 6.96094C7.32617 6.81771 7.26172 6.64583 7.26172 6.44531C7.26172 6.35938 7.27604 6.2806 7.30469 6.20898C7.33333 6.13737 7.36198 6.05859 7.39062 5.97266L8.76562 4.29688H0.730469C0.529948 4.29688 0.358073 4.22526 0.214844 4.08203C0.0716146 3.9388 0 3.78125 0 3.60938C0 3.40885 0.0716146 3.23698 0.214844 3.09375C0.358073 2.95052 0.529948 2.87891 0.730469 2.87891H8.76562L7.39062 1.16016C7.36198 1.10286 7.33333 1.03125 7.30469 0.945312C7.27604 0.859375 7.26172 0.773438 7.26172 0.6875C7.26172 0.572917 7.2832 0.472656 7.32617 0.386719C7.36914 0.300781 7.43359 0.214844 7.51953 0.128906Z" fill="currentColor" />
+    </svg>
+  ),
+  chevronDown: ({ size, title, ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      {title ? <title>{title}</title> : null}
+      <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  ),
+  account: ({ size, title, ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      {title ? <title>{title}</title> : null}
+      <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor" />
+    </svg>
+  ),
+  info: ({ size, title, ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      {title ? <title>{title}</title> : null}
+      <circle cx="12" cy="12" r="10" fill="var(--color-muted-2)" />
+      <path d="M12 7v2M12 11v6" stroke="var(--color-background)" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  ),
+  ruble: ({ size, title, ...props }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+      {title ? <title>{title}</title> : null}
+      <circle cx="12" cy="12" r="12" fill="var(--color-muted-2)" />
+      <text x="12" y="12" fontSize="16" fontWeight="bold" fill="var(--color-background)" textAnchor="middle" dy=".35em">₽</text>
     </svg>
   )
 }

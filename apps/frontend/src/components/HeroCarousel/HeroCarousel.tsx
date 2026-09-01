@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import Icon from "../Icon/Icon"
+import Icon from "src/components/Icon/Icon"
 import styles from "./HeroCarousel.module.css"
 
 
