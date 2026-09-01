@@ -63,7 +63,7 @@ export default function SteamTopUp() {
           <div className={styles.amountIconWrapper}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="12" r="12" fill="var(--color-muted-2)" />
-              <path transform="translate(-2, 0)" d="M11 7V17H13V13H14C15.6569 13 17 11.6569 17 10C17 8.34315 15.6569 7 14 7H11ZM13 9H14C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H13V9Z" fill="var(--color-background)" />
+              <text x="12" y="12" fontSize="16" fontWeight="bold" fill="var(--color-background)" textAnchor="middle" dy=".35em">₽</text>
             </svg>
           </div>
 
