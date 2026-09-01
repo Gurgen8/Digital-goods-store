@@ -233,23 +233,49 @@
   opacity: 0.85;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1150px) {
   .card {
     flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .loginBlock {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  .amountContainer {
+    flex: 1;
+    min-width: 280px;
+  }
+  
+  .amountDetails {
+    flex: 1;
+  }
+
+  .payBtn {
+    flex: initial;
+  }
+}
+
+@media (max-width: 600px) {
+  .card {
     gap: 12px;
   }
 
   .loginBlock {
     width: 100%;
+    flex: none;
   }
 
   .amountContainer {
     width: 100%;
-    justify-content: space-between;
+    flex: none;
   }
 
   .payBtn {
     width: 100%;
+    flex: none;
     text-align: center;
   }
 }

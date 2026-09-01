@@ -33,3 +33,13 @@
   width: 16px;
   height: 16px;
 }
+
+@media (max-width: 1150px) {
+  .icon {
+    display: none;
+  }
+
+  .chip {
+    padding: 8px 16px;
+  }
+}

@@ -9,7 +9,7 @@ import SkeletonGrid from "../../components/Feedback/SkeletonGrid"
 import Footer from "../../components/Footer/Footer"
 import Header from "../../components/Header/Header"
 import HeroCarousel from "../../components/HeroCarousel/HeroCarousel"
-import Icon from "../../components/Icon/Icon"
+
 import ProductGrid from "../../components/ProductGrid/ProductGrid"
 import Reviews from "../../components/Reviews/Reviews"
 import ServiceIcons from "../../components/ServiceIcons/ServiceIcons"

@@ -1,7 +1,6 @@
 import { useMemo } from "react"
-import type { BrandName } from "../../assets/brands"
-import { brandIconSrc } from "../../assets/brands"
 import styles from "./ServiceIcons.module.css"
+import { brandIconSrc, BrandName } from "src/assets/brands";
 
 export default function ServiceIcons() {
   const items = useMemo(

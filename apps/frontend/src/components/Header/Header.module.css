@@ -66,6 +66,9 @@
   font-weight: 500;
   color: var(--color-text);
   padding: 12px 8px 12px 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .searchInput::placeholder {
@@ -138,12 +141,48 @@
   background: #e5e7eb;
 }
 
+@media (max-width: 768px) {
+  .row {
+    gap: 12px;
+  }
+}
+
 @media (max-width: 560px) {
   .row {
-    gap: 10px;
+    gap: 8px;
   }
 
   .catalogButtonText {
     display: none;
+  }
+
+  .catalogButton {
+    padding: 0;
+    width: 48px;
+    justify-content: center;
+  }
+
+  .searchWrap {
+    padding: 0 0 0 10px;
+  }
+
+  .searchInput {
+    font-size: 13px;
+    padding: 12px 4px 12px 0;
+  }
+
+  .favoriteButton {
+    width: 32px;
+    height: 32px;
+    margin-right: 4px;
+  }
+  
+  .searchButton {
+    width: 42px;
+  }
+
+  .profileButton {
+    width: 42px;
+    height: 42px;
   }
 }

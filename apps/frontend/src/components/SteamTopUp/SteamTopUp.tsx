@@ -1,8 +1,8 @@
 import type { ChangeEvent } from "react"
 import { useMemo, useState } from "react"
 import type { MoneyCurrency } from "@repo/shared"
-import { brandIconSrc } from "../../assets/brands"
 import styles from "./SteamTopUp.module.css"
+import { brandIconSrc } from "src/assets/brands"
 
 export default function SteamTopUp() {
   const currencies = useMemo<MoneyCurrency[]>(() => ["$", "₸", "₽"], [])
@@ -40,7 +40,7 @@ export default function SteamTopUp() {
         {/* 2 — Login field */}
         <div className={styles.loginBlock}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.fieldIcon}>
-            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor"/>
+            <path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" fill="currentColor" />
           </svg>
           <input
             className={styles.loginInput}
@@ -62,11 +62,11 @@ export default function SteamTopUp() {
         <div className={styles.amountContainer}>
           <div className={styles.amountIconWrapper}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-               <circle cx="12" cy="12" r="12" fill="#9aa1ae" />
-               <path d="M11 7V17H13V13H14C15.6569 13 17 11.6569 17 10C17 8.34315 15.6569 7 14 7H11ZM13 9H14C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H13V9Z" fill="#fff" />
+              <circle cx="12" cy="12" r="12" fill="#9aa1ae" />
+              <path d="M11 7V17H13V13H14C15.6569 13 17 11.6569 17 10C17 8.34315 15.6569 7 14 7H11ZM13 9H14C14.5523 9 15 9.44772 15 10C15 10.5523 14.5523 11 14 11H13V9Z" fill="#fff" />
             </svg>
           </div>
-          
+
           <div className={styles.amountDetails}>
             <span className={styles.amountLabel}>Сумма</span>
             <div className={styles.amountInputRow}>

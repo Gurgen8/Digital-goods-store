@@ -16,7 +16,7 @@ export const products: Product[] = [
   },
   {
     id: "pubg-mobile-topup",
-    title: "PUBG Mobile UC",
+    title: "💥 PUBG Mobile UC 🔑",
     subtitle: "Пополнение",
     priceRub: 139,
     oldPriceRub: 199,
@@ -24,7 +24,7 @@ export const products: Product[] = [
   },
   {
     id: "roblox-gift-card",
-    title: "Roblox Gift Card",
+    title: "💥 Roblox Gift Card 🔑",
     subtitle: "Подарочная карта",
     priceRub: 499,
     oldPriceRub: 699,
@@ -32,7 +32,7 @@ export const products: Product[] = [
   },
   {
     id: "telegram-premium",
-    title: "Telegram Premium",
+    title: "💥 Telegram Premium 🔑",
     subtitle: "Подписка",
     priceRub: 399,
     oldPriceRub: 499,
@@ -40,7 +40,7 @@ export const products: Product[] = [
   },
   {
     id: "playstation-plus",
-    title: "PlayStation Plus",
+    title: "💥 PlayStation Plus 🔑",
     subtitle: "Подписка",
     priceRub: 1290,
     oldPriceRub: 1590,
@@ -48,7 +48,7 @@ export const products: Product[] = [
   },
   {
     id: "tiktok-coins",
-    title: "TikTok Coins",
+    title: "💥 TikTok Coins 🔑",
     subtitle: "Пополнение",
     priceRub: 299,
     oldPriceRub: 349,
@@ -56,7 +56,7 @@ export const products: Product[] = [
   },
   {
     id: "app-store-gift",
-    title: "App Store & iTunes",
+    title: "💥 App Store & iTunes 🔑",
     subtitle: "Gift Card",
     priceRub: 999,
     oldPriceRub: 1099,
@@ -64,7 +64,7 @@ export const products: Product[] = [
   },
   {
     id: "chatgpt-plus",
-    title: "ChatGPT Plus",
+    title: "💥 ChatGPT Plus 🔑",
     subtitle: "Подписка",
     priceRub: 1990,
     oldPriceRub: 2190,
