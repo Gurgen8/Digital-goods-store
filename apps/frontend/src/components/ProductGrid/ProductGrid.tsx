@@ -1,8 +1,9 @@
+import { memo } from "react"
 import type { Product } from "@repo/shared"
 import ProductCard from "src/components/ProductCard/ProductCard"
 import styles from "./ProductGrid.module.css"
 
-export default function ProductGrid({
+export default memo(function ProductGrid({
   products,
   onBuy,
   busyId
@@ -26,5 +27,4 @@ export default function ProductGrid({
       </div>
     </section>
   )
-}
-
+})

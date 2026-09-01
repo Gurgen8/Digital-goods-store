@@ -1,25 +1,18 @@
 import type { ReactNode } from "react"
+import { memo } from "react"
 import styles from "./Chip.module.css"
 
-export default function Chip({
-  icon,
-  children,
-  onClick,
-  active = false
-}: {
+type Props = {
   icon?: ReactNode
-  children: ReactNode
-  onClick?: () => void
   active?: boolean
-}) {
+  children: ReactNode
+}
+
+export default memo(function Chip({ icon, active, children }: Props) {
   return (
-    <button 
-      type="button" 
-      className={`${styles.chip} ${active ? styles.active : ""}`} 
-      onClick={onClick}
-    >
-      {icon ? <span className={styles.icon}>{icon}</span> : null}
-      <span>{children}</span>
+    <button type="button" className={`${styles.chip} ${active ? styles.active : ""}`} aria-pressed={active}>
+      {icon && <span className={styles.icon}>{icon}</span>}
+      {children}
     </button>
   )
-}
+})

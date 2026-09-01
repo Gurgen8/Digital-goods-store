@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import type { Product } from "@repo/shared"
 import { createOrder, getProducts } from "src/api/shopApi"
@@ -43,28 +43,31 @@ export default function HomePage() {
 
   const chips = useMemo(
     () => [
-      { label: "Донат", icon: <img src={filterIcons.donate} alt="" /> },
-      { label: "Подписки", icon: <img src={filterIcons.subscribes} alt="" /> },
-      { label: "Предметы", icon: <img src={filterIcons.items} alt="" /> },
-      { label: "Аккаунты", icon: <img src={filterIcons.accounts} alt="" /> },
-      { label: "Ключи", icon: <img src={filterIcons.keys} alt="" /> },
-      { label: "Игровая валюта", icon: <img src={filterIcons.game_valut} alt="" /> },
-      { label: "Другое", icon: <img src={filterIcons.other} alt="" /> }
+      { label: "Донат", icon: <img src={filterIcons.donate} alt="" loading="lazy" decoding="async" /> },
+      { label: "Подписки", icon: <img src={filterIcons.subscribes} alt="" loading="lazy" decoding="async" /> },
+      { label: "Предметы", icon: <img src={filterIcons.items} alt="" loading="lazy" decoding="async" /> },
+      { label: "Аккаунты", icon: <img src={filterIcons.accounts} alt="" loading="lazy" decoding="async" /> },
+      { label: "Ключи", icon: <img src={filterIcons.keys} alt="" loading="lazy" decoding="async" /> },
+      { label: "Игровая валюта", icon: <img src={filterIcons.game_valut} alt="" loading="lazy" decoding="async" /> },
+      { label: "Другое", icon: <img src={filterIcons.other} alt="" loading="lazy" decoding="async" /> }
     ],
     []
   )
 
-  const onBuy = async (productId: string) => {
-    try {
-      setBusyId(productId)
-      const { orderId } = await createOrder(productId)
-      navigate(`/checkout/${orderId}`)
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Something went wrong")
-    } finally {
-      setBusyId(undefined)
-    }
-  }
+  const onBuy = useCallback(
+    async (productId: string) => {
+      try {
+        setBusyId(productId)
+        const { orderId } = await createOrder(productId)
+        navigate(`/checkout/${orderId}`)
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "Something went wrong")
+      } finally {
+        setBusyId(undefined)
+      }
+    },
+    [navigate]
+  )
 
   return (
     <div className={styles.page}>

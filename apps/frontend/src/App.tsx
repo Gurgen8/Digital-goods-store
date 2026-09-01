@@ -1,20 +1,25 @@
+import { Suspense, lazy } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
-import HomePage from "./pages/HomePage/HomePage"
-import CheckoutPage from "./pages/CheckoutPage/CheckoutPage"
-import OrderPage from "./pages/OrderPage/OrderPage"
-import AdminPage from "./pages/AdminPage/AdminPage"
-import NotFoundPage from "./pages/NotFoundPage/NotFoundPage"
+import Spinner from "src/components/Spinner/Spinner"
+
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"))
+const CheckoutPage = lazy(() => import("./pages/CheckoutPage/CheckoutPage"))
+const OrderPage = lazy(() => import("./pages/OrderPage/OrderPage"))
+const AdminPage = lazy(() => import("./pages/AdminPage/AdminPage"))
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/checkout/:orderId" element={<CheckoutPage />} />
-      <Route path="/orders/:id" element={<OrderPage />} />
-      <Route path="/admin" element={<AdminPage />} />
-      <Route path="/checkout" element={<Navigate to="/" replace />} />
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+    <Suspense fallback={<Spinner />}>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/checkout/:orderId" element={<CheckoutPage />} />
+        <Route path="/orders/:id" element={<OrderPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/checkout" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </Suspense>
   )
 }
 

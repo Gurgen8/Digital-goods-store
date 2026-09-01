@@ -1,3 +1,4 @@
+import { memo } from "react"
 import Icon from "src/components/Icon/Icon"
 import styles from "./ReviewCard.module.css"
 
@@ -12,7 +13,7 @@ type Props = {
   priceRub: number
 }
 
-export default function ReviewCard({
+export default memo(function ReviewCard({
   avatarUrl,
   name,
   rating,
@@ -66,4 +67,4 @@ export default function ReviewCard({
       </div>
     </article>
   )
-}
+})

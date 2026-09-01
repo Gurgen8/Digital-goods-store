@@ -1,8 +1,9 @@
+import { memo } from "react"
 import type { Product } from "@repo/shared"
 import Button from "src/components/Button/Button"
 import styles from "./ProductCard.module.css"
 
-export default function ProductCard({
+export default memo(function ProductCard({
   product,
   onBuy,
   busy
@@ -50,4 +51,4 @@ export default function ProductCard({
     </article>
   )
 }
-
+)
