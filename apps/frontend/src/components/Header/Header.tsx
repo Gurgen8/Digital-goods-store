@@ -46,7 +46,7 @@ export default function Header() {
               aria-expanded={isCatalogOpen}
               onClick={() => setIsCatalogOpen((v: boolean) => !v)}
             >
-              <Icon name="grid" />
+              <Icon name="catalog" />
               <span className={styles.catalogButtonText}>Каталог</span>
             </button>
 
