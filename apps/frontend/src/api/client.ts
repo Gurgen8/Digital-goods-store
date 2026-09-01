@@ -3,7 +3,7 @@ import type { ApiError } from "@repo/shared"
 const metaEnv = (import.meta as unknown as { env?: Record<string, unknown> }).env
 
 export const API_URL =
-  metaEnv?.VITE_API_URL?.toString().replace(/\/$/, "") ?? "http://localhost:3001"
+  metaEnv?.VITE_API_URL?.toString().replace(/\/$/, "")
 
 export class HttpError extends Error {
   status: number

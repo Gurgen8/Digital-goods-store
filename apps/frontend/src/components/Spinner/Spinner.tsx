@@ -1,4 +1,4 @@
-import styles from "src/components/Feedback/Feedback.module.css"
+import styles from "./Spinner.module.css"
 
 export default function Spinner() {
   return (
