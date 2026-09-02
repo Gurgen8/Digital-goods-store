@@ -5,14 +5,18 @@ services:
       dockerfile: apps/backend/Dockerfile
     environment:
       - BACKEND_PORT=3001
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
     ports:
       - "3001:3001"
+    depends_on:
+      - postgres
   frontend:
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
     environment:
-      - VITE_API_URL=http://backend:3001
+      - VITE_API_URL=http://localhost:3001
     ports:
       - "5173:5173"
     depends_on:

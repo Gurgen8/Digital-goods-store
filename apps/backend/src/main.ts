@@ -12,7 +12,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const port = process.env.BACKEND_PORT as string;
-  await app.listen(port);
-  console.log(`[backend] listening on http://localhost:${port}`);
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();

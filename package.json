@@ -7,11 +7,13 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "concurrently -n backend,frontend -c blue,green \"pnpm -C apps/backend dev\" \"pnpm -C apps/frontend dev\"",
+    "dev": "docker compose up -d postgres && concurrently -n backend,frontend -c blue,green \"pnpm -C apps/backend dev\" \"pnpm -C apps/frontend dev\"",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "lint": "pnpm -r lint",
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "docker": "docker compose up --build",
+    "docker:down": "docker compose down"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
