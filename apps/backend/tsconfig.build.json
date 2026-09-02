@@ -6,12 +6,19 @@
     "rootDir": "./src",
     "baseUrl": ".",
     "paths": {
-      "@repo/shared": ["../../packages/shared/dist/index.d.ts"]
+      "@repo/shared": [
+        "../../packages/shared/dist/index.d.ts"
+      ],
+      "@/*": [
+        "src/*"
+      ]
     },
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "declaration": false,
     "sourceMap": true
   },
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

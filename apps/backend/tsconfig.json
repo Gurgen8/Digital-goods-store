@@ -1,12 +1,19 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@repo/shared": ["../../packages/shared/src/index.ts"]
+      "@repo/shared": ["../../packages/shared/src/index.ts"],
+      "@/*": ["src/*"]
     },
-    "types": ["node"]
+    "types": ["node"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "vitest.config.ts", "test/**/*.ts"]
+  "include": ["src/**/*.ts", "scripts/**/*.ts", "vitest.config.ts", "test/**/*.ts"]
 }
