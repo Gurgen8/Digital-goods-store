@@ -99,3 +99,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+.link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+.link:hover {
+  text-decoration: none;
+}

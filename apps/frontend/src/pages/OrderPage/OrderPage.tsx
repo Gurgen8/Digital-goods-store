@@ -7,22 +7,24 @@ import Container from "src/components/Container/Container"
 import Spinner from "src/components/Spinner/Spinner"
 import Footer from "src/components/Footer/Footer"
 import Header from "src/components/Header/Header"
+import LoginModal from "src/components/LoginModal/LoginModal"
 import styles from "./OrderPage.module.css"
 
 const labelForStatus = (s: OrderStatus) => {
-  if (s === "created") return "created • payment pending"
-  if (s === "paid") return "paid • preparing delivery"
-  if (s === "delivering") return "delivering • in progress"
-  if (s === "delivered") return "delivered • success"
-  if (s === "out_of_stock") return "out_of_stock • recovery required"
-  if (s === "delivery_failed") return "delivery_failed • recovery required"
-  return "payment_failed • failed"
+  if (s === "created") return "создан • ожидается оплата"
+  if (s === "paid") return "оплачен • подготовка доставки"
+  if (s === "delivering") return "доставляется • в процессе"
+  if (s === "delivered") return "доставлен • успешно"
+  if (s === "out_of_stock") return "нет в наличии • требуется восстановление"
+  if (s === "delivery_failed") return "ошибка доставки • требуется восстановление"
+  return "ошибка оплаты • не удалась"
 }
 
 export default function OrderPage() {
   const { id } = useParams<{ id: string }>()
   const [order, setOrder] = useState<Order | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
 
   const isTerminal = useMemo(() => {
     if (!order) return false
@@ -78,14 +80,14 @@ export default function OrderPage() {
       <Container>
         <div className={styles.wrap}>
           <div className={styles.card}>
-            <h1 className={styles.title}>Order</h1>
+            <h1 className={styles.title}>Заказ</h1>
             {!order && !error ? <Spinner /> : null}
 
             {error ? (
               <div role="alert">
                 <div>{error}</div>
                 <Button type="button" variant="secondary" onClick={() => window.location.reload()}>
-                  Retry
+                  Повторить
                 </Button>
               </div>
             ) : null}
@@ -107,8 +109,8 @@ export default function OrderPage() {
                 </div>
 
                 <div className={styles.meta}>
-                  <div>Order ID: {order.id}</div>
-                  <div>Price: {order.product.priceRub} ₽</div>
+                  <div>ID заказа: {order.id}</div>
+                  <div>Цена: {order.product.priceRub} ₽</div>
                 </div>
 
                 <div className={styles.status}>
@@ -125,20 +127,21 @@ export default function OrderPage() {
                 {order.status === "out_of_stock" || order.status === "delivery_failed" ? (
                   <div className={styles.meta}>
                     <div>
-                      Payment completed. Delivery temporarily unavailable. Your order will be
-                      retried.
+                      Оплата завершена. Доставка временно недоступна. Заказ будет повторен.
                     </div>
                     <div>
-                      <Link to="/admin">Open admin recovery</Link>
+                      <a className={styles.link} href="#" onClick={(e) => { e.preventDefault(); setIsLoginOpen(true); }}>
+                        Открыть админку восстановления
+                      </a>
                     </div>
                   </div>
                 ) : null}
 
                 {order.status === "payment_failed" ? (
                   <div className={styles.meta}>
-                    <div>Payment failed. Please create a new order.</div>
+                    <div>Оплата не удалась. Пожалуйста, создайте новый заказ.</div>
                     <div>
-                      <Link to="/">Back to home</Link>
+                      <Link to="/">На главную</Link>
                     </div>
                   </div>
                 ) : null}
@@ -149,14 +152,15 @@ export default function OrderPage() {
           <div className={styles.card}>
             <div className={styles.meta}>
               <div>
-                Backend simulates delivery automatically. Page polls status until terminal state.
+                Backend автоматически имитирует доставку. Страница опрашивает статус до конечного состояния.
               </div>
-              {order && !isTerminal ? <div>Loading…</div> : null}
+              {order && !isTerminal ? <div>Загрузка…</div> : null}
             </div>
           </div>
         </div>
       </Container>
       <Footer />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </div>
   )
 }

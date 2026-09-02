@@ -45,7 +45,7 @@ export default function AdminPage() {
       <Container>
         <div className={styles.wrap}>
           <div className={styles.card}>
-            <h1 className={styles.title}>Recovery Orders</h1>
+            <h1 className={styles.title}>Восстановление заказов</h1>
 
             {error ? (
               <div role="alert" className={styles.muted}>
@@ -56,18 +56,18 @@ export default function AdminPage() {
             {!orders && !error ? <Spinner /> : null}
 
             {orders && orders.length === 0 ? (
-              <div className={styles.muted}>No recovery orders</div>
+              <div className={styles.muted}>Нет заказов для восстановления</div>
             ) : null}
 
             {orders && orders.length > 0 ? (
               <table className={styles.table}>
                 <thead className={styles.thead}>
                   <tr>
-                    <th className={styles.th}>Order</th>
-                    <th className={styles.th}>Product</th>
-                    <th className={styles.th}>Status</th>
-                    <th className={styles.th}>Created</th>
-                    <th className={styles.th}>Action</th>
+                    <th className={styles.th}>Заказ</th>
+                    <th className={styles.th}>Продукт</th>
+                    <th className={styles.th}>Статус</th>
+                    <th className={styles.th}>Создан</th>
+                    <th className={styles.th}>Действие</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,7 @@ export default function AdminPage() {
                             onClick={() => retry(o.id)}
                             disabled={busyId === o.id}
                           >
-                            Retry delivery
+                            Повторить доставку
                           </Button>
                         </div>
                       </td>

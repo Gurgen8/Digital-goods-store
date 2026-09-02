@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import type { MoneyCurrency, Order } from "@repo/shared"
+import type { Order } from "@repo/shared"
 import { getOrder, payOrder } from "src/api/shopApi"
 import Button from "src/components/Button/Button"
 import Container from "src/components/Container/Container"
@@ -15,8 +15,6 @@ export default function CheckoutPage() {
   const [order, setOrder] = useState<Order | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const currencies = useMemo<MoneyCurrency[]>(() => ["$", "₸", "₽"], [])
-  const [currency, setCurrency] = useState<MoneyCurrency>("$")
 
   useEffect(() => {
     if (!orderId) return
@@ -41,7 +39,7 @@ export default function CheckoutPage() {
     if (!orderId) return
     try {
       setBusy(true)
-      await payOrder(orderId, { result, currency })
+      await payOrder(orderId, { result, currency: "$" })
       navigate(`/orders/${orderId}`)
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong")
@@ -56,7 +54,7 @@ export default function CheckoutPage() {
       <Container>
         <div className={styles.content}>
           <div className={styles.card}>
-            <h1 className={styles.title}>Checkout</h1>
+            <h1 className={styles.title}>Оплата</h1>
 
             {!order && !error ? <Spinner /> : null}
 
@@ -83,28 +81,12 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className={styles.price}>{order.product.priceRub} ₽</div>
-                <div className={styles.hint}>Order status: {order.status}</div>
+                <div className={styles.hint}>Статус заказа: {order.status}</div>
 
                 {order.status === "created" ? (
                   <div className={styles.actions}>
-                    <div className={styles.hint}>Mock payment:</div>
-                    <div className={styles.actions}>
-                      <div className={styles.hint}>Валюта</div>
-                      <div>
-                        {currencies.map((c) => (
-                          <Button
-                            key={c}
-                            type="button"
-                            variant={c === currency ? "primary" : "secondary"}
-                            onClick={() => setCurrency(c)}
-                          >
-                            {c}
-                          </Button>
-                        ))}
-                      </div>
-                    </div>
                     <Button type="button" onClick={() => pay("success")} disabled={busy}>
-                      Pay success
+                      Оплатить успешно
                     </Button>
                     <Button
                       type="button"
@@ -112,12 +94,12 @@ export default function CheckoutPage() {
                       onClick={() => pay("failed")}
                       disabled={busy}
                     >
-                      Pay failed
+                      Ошибка оплаты
                     </Button>
                   </div>
                 ) : (
                   <div className={styles.actions}>
-                    <Link to={`/orders/${order.id}`}>Go to order</Link>
+                    <Link to={`/orders/${order.id}`}>Перейти к заказу</Link>
                   </div>
                 )}
               </>

@@ -1,14 +1,18 @@
 import { useEffect, useId, useRef, useState } from "react"
+import { useLocation } from "react-router-dom"
 import Container from "src/components/Container/Container"
 import CatalogDropdown from "./components/CatalogDropdown/CatalogDropdown"
 import Icon from "src/components/Icon/Icon"
+import LoginModal from "src/components/LoginModal/LoginModal"
 import styles from "./Header.module.css"
 
 
 export default function Header() {
   const [isCatalogOpen, setIsCatalogOpen] = useState(false)
+  const [isLoginOpen, setIsLoginOpen] = useState(false)
   const catalogButtonId = useId()
   const wrapRef = useRef<HTMLDivElement | null>(null)
+  const location = useLocation()
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -82,12 +86,22 @@ export default function Header() {
           </div>
 
           {/* Profile */}
-          <button className={styles.profileButton} type="button" aria-label="Профиль">
+          <button
+            className={styles.profileButton}
+            type="button"
+            aria-label="Профиль"
+            onClick={() => {
+              if (!location.pathname.startsWith("/admin")) {
+                setIsLoginOpen(true)
+              }
+            }}
+          >
             <Icon name="user" />
           </button>
 
         </div>
       </Container>
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </header>
   )
 }
