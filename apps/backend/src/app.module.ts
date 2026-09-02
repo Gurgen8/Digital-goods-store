@@ -41,4 +41,4 @@ import { SeedService } from '@/database/seed.service';
   ],
   providers: [SeedService],
 })
-export class AppModule {}
+export class AppModule { }

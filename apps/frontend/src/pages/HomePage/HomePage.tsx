@@ -9,7 +9,6 @@ import SkeletonGrid from "src/components/SkeletonGrid/SkeletonGrid"
 import Footer from "src/components/Footer/Footer"
 import Header from "src/components/Header/Header"
 import HeroCarousel from "src/components/HeroCarousel/HeroCarousel"
-
 import ProductGrid from "src/components/ProductGrid/ProductGrid"
 import Reviews from "src/components/Reviews/Reviews"
 import ServiceIcons from "src/components/ServiceIcons/ServiceIcons"
@@ -117,11 +116,11 @@ export default function HomePage() {
           <h2 className={styles.sectionTitle}>Рекомендованные товары</h2>
           <button className={styles.showAllBtn}>Показать все</button>
         </div>
-        
+
         <div className={styles.state}>
           {!error && !products ? <SkeletonGrid /> : null}
           {!error && products && products.length > 0 ? (
-            <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
+            <ProductGrid products={products.slice(4, 8)} onBuy={onBuy} busyId={busyId} />
           ) : null}
         </div>
 
@@ -129,17 +128,16 @@ export default function HomePage() {
           <h2 className={styles.sectionTitle}>Другие товары</h2>
           <button className={styles.showAllBtn}>Показать все</button>
         </div>
-        
+
         <div className={styles.state}>
           {!error && !products ? <SkeletonGrid /> : null}
           {!error && products && products.length > 0 ? (
-            <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
+            <ProductGrid products={products.slice(8, 12)} onBuy={onBuy} busyId={busyId} />
           ) : null}
         </div>
 
         <Reviews />
       </Container>
-
       <Footer />
     </div>
   )

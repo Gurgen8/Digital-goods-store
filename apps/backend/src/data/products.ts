@@ -69,5 +69,37 @@ export const products: Product[] = [
     priceRub: 1990,
     oldPriceRub: 2190,
     imageUrl: img("modern AI subscription cover, clean white background, subtle green accent")
+  },
+  {
+    id: "wow-subscription",
+    title: "💥 World of Warcraft 🔑",
+    subtitle: "Подписка",
+    priceRub: 1490,
+    oldPriceRub: 1790,
+    imageUrl: img("modern dark sci fi game cover art, red accent lighting, bold composition")
+  },
+  {
+    id: "valorant-points",
+    title: "💥 Valorant Points 🔑",
+    subtitle: "Пополнение",
+    priceRub: 590,
+    oldPriceRub: 790,
+    imageUrl: img("mobile shooter game themed cover art, energetic, blue orange lighting")
+  },
+  {
+    id: "netflix-premium",
+    title: "💥 Netflix Premium 🔑",
+    subtitle: "Подписка",
+    priceRub: 899,
+    oldPriceRub: 1099,
+    imageUrl: img("colorful playful game gift card cover, minimal, high contrast")
+  },
+  {
+    id: "xbox-game-pass",
+    title: "💥 Xbox Game Pass 🔑",
+    subtitle: "Подписка",
+    priceRub: 1190,
+    oldPriceRub: 1490,
+    imageUrl: img("gaming subscription cover art, dark background, neon blue glow, minimal")
   }
 ]

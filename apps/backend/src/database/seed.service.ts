@@ -24,23 +24,27 @@ export class SeedService implements OnApplicationBootstrap {
 
     // Seed products
     for (const p of products) {
-      const exists = await this.productRepo.findOne({ where: { sku: p.id } }); // Assuming id in products.ts is SKU
-      if (!exists) {
-        await this.productRepo.save({
-          id: p.id,
-          sku: p.id,
-          name: p.title,
-          subtitle: p.subtitle,
-          type: 'key',
-          price: p.priceRub,
-          oldPrice: p.oldPriceRub,
-          currency: 'RUB',
-          image: p.imageUrl,
-        });
-      }
+      await this.productRepo.save({
+        id: p.id,
+        sku: p.id,
+        name: p.title,
+        subtitle: p.subtitle,
+        type: 'key',
+        price: p.priceRub,
+        oldPrice: p.oldPriceRub,
+        currency: 'RUB',
+        image: p.imageUrl,
+      });
     }
 
-    // Seed inventory for doom-2016-steam-key
+    // Seed inventory for 4 specific products to allow testing purchases
+    const targetSkus = [
+      'doom-2016-steam-key',
+      'pubg-mobile-topup',
+      'roblox-gift-card',
+      'telegram-premium'
+    ];
+
     const keys = [
       "LFXC-TNCS-BPCD", "P3EI-W8UO-9B4K", "FEL3-GUXN-TCCH", "YPLV-QK2Z-IUS5",
       "0K9E-P1FR-BY1U", "5LZV-UQ48-RXCZ", "X93K-NYAQ-GEC1", "EIO5-CQT5-35KO",
@@ -57,14 +61,18 @@ export class SeedService implements OnApplicationBootstrap {
       "W67T-ZB0Q-1XKB", "7EQM-K09J-XKUO"
     ];
 
-    for (const key of keys) {
-      const exists = await this.inventoryRepo.findOne({ where: { code: key } });
-      if (!exists) {
-        await this.inventoryRepo.save({
-          sku: 'doom-2016-steam-key', // Sample product
-          code: key,
-          status: 'available',
-        });
+    for (const sku of targetSkus) {
+      for (const key of keys) {
+        // Prefix the key with the SKU to make them unique across products
+        const uniqueKey = `${sku.substring(0, 4).toUpperCase()}-${key}`;
+        const exists = await this.inventoryRepo.findOne({ where: { code: uniqueKey } });
+        if (!exists) {
+          await this.inventoryRepo.save({
+            sku: sku,
+            code: uniqueKey,
+            status: 'available',
+          });
+        }
       }
     }
 
