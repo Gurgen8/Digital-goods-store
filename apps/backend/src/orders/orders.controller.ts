@@ -1,18 +1,8 @@
 import { Controller, Get, Post, Body, Param, Headers } from '@nestjs/common';
 import { OrdersService } from '@/orders/orders.service';
-import { z } from 'zod';
-
-const CreateOrderSchema = z.object({
-  productId: z.string().min(1),
-});
-
-const MockPaySchema = z.object({
-  result: z.enum(['success', 'failed']),
-});
-
-const ApplyPromoSchema = z.object({
-  code: z.string().min(1),
-});
+import { CreateOrderDto } from './dto/create-order.dto';
+import { MockPayDto } from './dto/mock-pay.dto';
+import { ApplyPromoDto } from './dto/apply-promo.dto';
 
 @Controller('api/orders')
 export class OrdersController {
@@ -20,11 +10,10 @@ export class OrdersController {
 
   @Post()
   async createOrder(
-    @Body() body: unknown,
+    @Body() body: CreateOrderDto,
     @Headers('idempotency-key') idempotencyKey?: string,
   ) {
-    const parsed = CreateOrderSchema.parse(body);
-    return this.ordersService.createOrder(parsed.productId, idempotencyKey);
+    return this.ordersService.createOrder(body.productId, idempotencyKey);
   }
 
   @Get(':id')
@@ -33,14 +22,12 @@ export class OrdersController {
   }
 
   @Post(':id/pay')
-  async mockPay(@Param('id') id: string, @Body() body: unknown) {
-    const parsed = MockPaySchema.parse(body);
-    return this.ordersService.mockPay(id, parsed.result);
+  async mockPay(@Param('id') id: string, @Body() body: MockPayDto) {
+    return this.ordersService.mockPay(id, body.result);
   }
 
   @Post(':id/apply-promo')
-  async applyPromo(@Param('id') id: string, @Body() body: unknown) {
-    const parsed = ApplyPromoSchema.parse(body);
-    return this.ordersService.applyPromo(id, parsed.code);
+  async applyPromo(@Param('id') id: string, @Body() body: ApplyPromoDto) {
+    return this.ordersService.applyPromo(id, body.code);
   }
 }
