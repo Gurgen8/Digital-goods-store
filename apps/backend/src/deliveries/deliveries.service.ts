@@ -26,39 +26,65 @@ export class DeliveriesService {
   ) { }
 
   async startDelivery(orderId: string, forceRetry = false) {
-    const order = await this.orderRepo.findOne({ where: { id: orderId } });
-    if (!order) return;
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    if (!forceRetry && (order.status === 'delivered' || order.status === 'out_of_stock' || order.status === 'delivery_failed')) {
-      return;
-    }
+    let delivery: DeliveryEntity;
+    let order: OrderEntity;
 
-    if (forceRetry && order.status === 'delivered') {
-      return;
-    }
+    try {
+      order = await queryRunner.manager.findOne(OrderEntity, {
+        where: { id: orderId },
+        lock: { mode: 'pessimistic_write' }
+      }) as OrderEntity;
 
-    order.status = 'delivering';
-    await this.orderRepo.save(order);
+      if (!order) {
+        await queryRunner.rollbackTransaction();
+        return;
+      }
 
-    let delivery = await this.deliveryRepo.findOne({ where: { orderId } });
-    if (!delivery) {
-      delivery = this.deliveryRepo.create({
+      if (!forceRetry && (order.status === 'delivered' || order.status === 'out_of_stock' || order.status === 'delivery_failed' || order.status === 'delivering')) {
+        await queryRunner.rollbackTransaction();
+        return;
+      }
+
+      if (forceRetry && (order.status === 'delivered' || order.status === 'delivering')) {
+        await queryRunner.rollbackTransaction();
+        return;
+      }
+
+      order.status = 'delivering';
+      await queryRunner.manager.save(OrderEntity, order);
+
+      delivery = await queryRunner.manager.findOne(DeliveryEntity, { where: { orderId } }) as DeliveryEntity;
+      if (!delivery) {
+        delivery = this.deliveryRepo.create({
+          orderId,
+          sku: order.sku,
+          requestId: `req_${orderId}_${randomUUID()}`,
+          provider: 'ProviderA',
+          status: 'pending',
+        });
+        await queryRunner.manager.save(DeliveryEntity, delivery);
+      }
+
+      const attempt = this.attemptRepo.create({
         orderId,
-        sku: order.sku,
-        requestId: `req_${orderId}_${randomUUID()}`,
-        provider: 'ProviderA',
-        status: 'pending',
+        requestId: delivery.requestId,
+        provider: delivery.provider,
+        status: 'started',
       });
-      await this.deliveryRepo.save(delivery);
-    }
+      await queryRunner.manager.save(DeliveryAttemptEntity, attempt);
 
-    const attempt = this.attemptRepo.create({
-      orderId,
-      requestId: delivery.requestId,
-      provider: delivery.provider,
-      status: 'started',
-    });
-    await this.attemptRepo.save(attempt);
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      this.logger.error(`Failed to lock and start delivery for order ${orderId}`, e);
+      return;
+    } finally {
+      await queryRunner.release();
+    }
 
     try {
       await this.issueInventory(delivery, order);

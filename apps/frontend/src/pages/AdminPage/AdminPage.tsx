@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import type { Order } from "@repo/shared"
 import { getRecoveryOrders, retryDelivery } from "src/api/shopApi"
 import Button from "src/components/Button/Button"
@@ -8,6 +8,7 @@ import Spinner from "src/components/Spinner/Spinner"
 import Footer from "src/components/Footer/Footer"
 import Header from "src/components/Header/Header"
 import styles from "./AdminPage.module.css"
+import Icon from "src/components/Icon/Icon"
 
 export default function AdminPage() {
   const [orders, setOrders] = useState<Order[] | null>(null)
@@ -23,9 +24,15 @@ export default function AdminPage() {
       )
   }
 
+  const navigate = useNavigate()
+
   useEffect(() => {
+    if (sessionStorage.getItem("isAdmin") !== "true") {
+      navigate("/?login=true", { replace: true })
+      return
+    }
     void load()
-  }, [])
+  }, [navigate])
 
   const retry = async (id: string) => {
     try {
@@ -34,6 +41,7 @@ export default function AdminPage() {
       await load()
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Something went wrong")
+      setTimeout(() => setError(null), 6000)
     } finally {
       setBusyId(null)
     }
@@ -48,8 +56,9 @@ export default function AdminPage() {
             <h1 className={styles.title}>Восстановление заказов</h1>
 
             {error ? (
-              <div role="alert" className={styles.muted}>
-                {error}
+              <div role="alert" className={styles.errorAlert}>
+                <Icon name="info" size={18} />
+                <span>{error}</span>
               </div>
             ) : null}
 

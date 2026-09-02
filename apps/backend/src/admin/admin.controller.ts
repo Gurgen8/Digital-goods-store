@@ -55,6 +55,14 @@ export class AdminController {
     // Trigger delivery retry safely
     await this.deliveriesService.startDelivery(order.id, true);
 
+    const updatedOrder = await this.orderRepo.findOne({ where: { id } });
+    if (updatedOrder?.status === 'out_of_stock') {
+      throw new ConflictException('Ключей всё ещё нет на складе! Сначала пополните инвентарь.');
+    }
+    if (updatedOrder?.status === 'delivery_failed') {
+      throw new ConflictException('Ошибка связи с провайдером выдачи. Попробуйте позже.');
+    }
+
     return { ok: true };
   }
 }

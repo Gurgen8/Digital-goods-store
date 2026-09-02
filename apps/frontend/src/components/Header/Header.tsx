@@ -18,6 +18,13 @@ export default function Header() {
   const isAdmin = location.pathname.startsWith("/admin")
 
   useEffect(() => {
+    if (location.search.includes("login=true")) {
+      setIsLoginOpen(true)
+      navigate(location.pathname, { replace: true })
+    }
+  }, [location.search, location.pathname, navigate])
+
+  useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return
       setIsCatalogOpen(false)

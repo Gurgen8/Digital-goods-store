@@ -17,6 +17,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   const handleLogin = () => {
     if (login === "admin" && password === "admin") {
+      sessionStorage.setItem("isAdmin", "true")
       onClose()
       navigate("/admin")
     } else {

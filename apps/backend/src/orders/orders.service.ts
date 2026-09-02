@@ -40,7 +40,17 @@ export class OrdersService {
       idempotencyKey: idempotencyKey || undefined,
     });
 
-    await this.orderRepo.save(order);
+    try {
+      await this.orderRepo.save(order);
+    } catch (err: unknown) {
+      if (err instanceof Error && 'code' in err && err.code === '23505' && idempotencyKey) {
+        const existing = await this.orderRepo.findOne({ where: { idempotencyKey } });
+        if (existing) {
+          return { orderId: existing.id };
+        }
+      }
+      throw err;
+    }
 
     // Process any webhooks that might have arrived before the order was created
     await this.webhooksService.processPendingWebhooksForOrder(order.id);
@@ -76,7 +86,10 @@ export class OrdersService {
 
   async applyPromo(orderId: string, code: string) {
     return this.dataSource.transaction(async (manager) => {
-      const order = await manager.findOne(OrderEntity, { where: { id: orderId } });
+      const order = await manager.findOne(OrderEntity, {
+        where: { id: orderId },
+        lock: { mode: 'pessimistic_write' }
+      });
       if (!order) throw new NotFoundException('Order not found');
       if (order.status !== 'created') throw new ConflictException('Order cannot be modified');
       if (order.promoCodeId) throw new ConflictException('Promo code already applied');

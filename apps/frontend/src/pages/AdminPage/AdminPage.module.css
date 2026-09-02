@@ -39,6 +39,20 @@
   font-size: 12px;
 }
 
+.errorAlert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  padding: 12px 16px;
+  border-radius: var(--radius-base);
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid var(--color-error-border);
+}
+
 .status {
   font-weight: 800;
 }
@@ -51,6 +65,7 @@
 }
 
 @media (max-width: 700px) {
+
   .table,
   .thead {
     display: block;

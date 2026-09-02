@@ -1,13 +1,13 @@
 import { randomUUID } from 'crypto';
 
 async function runRaceTest() {
-  const BACKEND_URL = 'http://localhost:3001';
+  const BACKEND_URL = process.env.VITE_API_URL
 
   console.log('1. Fetching product ID for DOOM...');
   const productsRes = await fetch(`${BACKEND_URL}/api/products`);
   const products = await productsRes.json() as { id: string, title: string }[];
   const product = products.find((p) => p.title.includes('DOOM') || p.id.includes('doom'));
-  
+
   if (!product) {
     throw new Error('DOOM Product not found');
   }
