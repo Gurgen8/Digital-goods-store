@@ -22,6 +22,9 @@ export type Order = {
   id: string
   product: Product
   status: OrderStatus
+  amount: number
+  originalAmount?: number
+  promoCodeId?: string
   createdAt: string
   updatedAt: string
   deliveryCode?: string

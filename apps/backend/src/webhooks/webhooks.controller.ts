@@ -16,7 +16,7 @@ export class WebhooksController {
   constructor(private readonly webhooksService: WebhooksService) { }
 
   @Post('payment')
-  async paymentWebhook(@Body() body: any) {
+  async paymentWebhook(@Body() body: unknown) {
     const parsed = PaymentWebhookSchema.parse(body);
     await this.webhooksService.processPaymentWebhook(parsed);
     return { ok: true };

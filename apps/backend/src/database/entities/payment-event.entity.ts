@@ -21,7 +21,7 @@ export class PaymentEventEntity {
   currency: string;
 
   @Column({ type: 'jsonb', nullable: true })
-  payload: any;
+  payload: Record<string, unknown>;
 
   @Column({ nullable: true })
   processedAt: Date;

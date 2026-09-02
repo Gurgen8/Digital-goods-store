@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { OrderEntity } from '@/database/entities/order.entity';
 import { ProductEntity } from '@/database/entities/product.entity';
+import { PromoCodeEntity } from '@/database/entities/promo-code.entity';
 import { WebhooksService } from '@/webhooks/webhooks.service';
 import { randomUUID } from 'crypto';
 
@@ -14,7 +15,9 @@ export class OrdersService {
     @InjectRepository(ProductEntity)
     private readonly productRepo: Repository<ProductEntity>,
     private readonly webhooksService: WebhooksService,
+    private readonly dataSource: DataSource,
   ) { }
+
 
   async createOrder(productId: string, idempotencyKey?: string) {
     if (idempotencyKey) {
@@ -61,11 +64,50 @@ export class OrdersService {
         priceRub: product?.price,
         imageUrl: product?.image,
       },
+      amount: order.amount,
+      originalAmount: order.originalAmount,
+      promoCodeId: order.promoCodeId,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
       updatedAt: order.updatedAt.toISOString(),
       deliveryCode: order.deliveryCode,
     };
+  }
+
+  async applyPromo(orderId: string, code: string) {
+    return this.dataSource.transaction(async (manager) => {
+      const order = await manager.findOne(OrderEntity, { where: { id: orderId } });
+      if (!order) throw new NotFoundException('Order not found');
+      if (order.status !== 'created') throw new ConflictException('Order cannot be modified');
+      if (order.promoCodeId) throw new ConflictException('Promo code already applied');
+
+      // Use pessimistic write lock to handle concurrent requests applying the same promo
+      const promo = await manager.findOne(PromoCodeEntity, {
+        where: { code },
+        lock: { mode: 'pessimistic_write' },
+      });
+
+      if (!promo) throw new NotFoundException('Invalid promo code');
+      if (promo.usedCount >= promo.maxUses) throw new ConflictException('Promo code limit reached');
+
+      let newAmount = order.amount;
+      if (promo.type === 'percent') {
+        newAmount = Math.max(0, order.amount - Math.floor((order.amount * promo.value) / 100));
+      } else if (promo.type === 'amount') {
+        // Assume promo currency matches order currency for simplicity
+        newAmount = Math.max(0, order.amount - promo.value);
+      }
+
+      order.originalAmount = order.amount;
+      order.amount = newAmount;
+      order.promoCodeId = promo.id;
+      await manager.save(OrderEntity, order);
+
+      promo.usedCount += 1;
+      await manager.save(PromoCodeEntity, promo);
+
+      return { ok: true, newAmount };
+    });
   }
 
   async mockPay(id: string, result: 'success' | 'failed') {

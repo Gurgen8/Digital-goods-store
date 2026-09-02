@@ -17,6 +17,12 @@ export class InventoryEntity {
   @Column({ nullable: true, unique: true })
   orderId: string;
 
+  @Column({ nullable: true, unique: true })
+  requestId: string;
+
+  @Column({ nullable: true })
+  provider: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

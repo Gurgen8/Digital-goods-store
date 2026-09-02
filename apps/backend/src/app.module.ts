@@ -33,7 +33,7 @@ import { SeedService } from '@/database/seed.service';
       ],
       synchronize: true, // Auto-create schema for this test assignment
     }),
-    TypeOrmModule.forFeature([ProductEntity, InventoryEntity]),
+    TypeOrmModule.forFeature([ProductEntity, InventoryEntity, PromoCodeEntity]),
     ProductsModule,
     OrdersModule,
     WebhooksModule,

@@ -3,17 +3,29 @@ import { randomUUID } from 'crypto';
 async function runRaceTest() {
   const BACKEND_URL = 'http://localhost:3001';
 
-  console.log('1. Creating a single order...');
+  console.log('1. Fetching product ID for DOOM...');
+  const productsRes = await fetch(`${BACKEND_URL}/api/products`);
+  const products = await productsRes.json() as { id: string, title: string }[];
+  const product = products.find((p) => p.title.includes('DOOM') || p.id.includes('doom'));
+  
+  if (!product) {
+    throw new Error('DOOM Product not found');
+  }
+
+  const productId = product.id;
+  console.log(`Using product ID: ${productId}`);
+
+  console.log('2. Creating a single order...');
   const createRes = await fetch(`${BACKEND_URL}/api/orders`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ productId: 'KEY-CS2-PRIME' }),
+    body: JSON.stringify({ productId }),
   });
   const orderData = await createRes.json();
   const orderId = orderData.orderId;
   console.log(`Order created: ${orderId}`);
 
-  console.log('2. Sending 50 concurrent webhooks...');
+  console.log('3. Sending 50 concurrent webhooks...');
   const concurrencyCount = 50;
   const promises = [];
 
@@ -39,10 +51,10 @@ async function runRaceTest() {
   await Promise.all(promises);
   console.log('Finished sending 50 webhooks.');
 
-  console.log('3. Waiting for delivery to finish (2 seconds)...');
-  await new Promise(r => setTimeout(r, 2000));
+  console.log('4. Waiting for delivery to finish (3 seconds)...');
+  await new Promise(r => setTimeout(r, 3000));
 
-  console.log('4. Checking order status...');
+  console.log('5. Checking order status...');
   const getOrderRes = await fetch(`${BACKEND_URL}/api/orders/${orderId}`);
   const order = await getOrderRes.json();
 
@@ -50,9 +62,9 @@ async function runRaceTest() {
   console.log(`Delivery Code: ${order.deliveryCode}`);
 
   if (order.status === 'delivered' && order.deliveryCode) {
-    console.log('✅ Race Test Passed: Only one delivery occurred.');
+    console.log('✅ Race Test Passed: Delivery successful.');
   } else {
-    console.log('❌ Race Test Failed: Delivery not successful or duplicate occurred.');
+    console.log('❌ Race Test Failed: Delivery not successful.');
   }
 }
 

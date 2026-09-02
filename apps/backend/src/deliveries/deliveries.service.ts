@@ -5,6 +5,7 @@ import { OrderEntity } from '@/database/entities/order.entity';
 import { InventoryEntity } from '@/database/entities/inventory.entity';
 import { DeliveryEntity } from '@/database/entities/delivery.entity';
 import { DeliveryAttemptEntity } from '@/database/entities/delivery-attempt.entity';
+import { MockProvidersService } from '@/deliveries/mock-providers.service';
 import { randomUUID } from 'crypto';
 
 @Injectable()
@@ -20,6 +21,7 @@ export class DeliveriesService {
     private readonly deliveryRepo: Repository<DeliveryEntity>,
     @InjectRepository(DeliveryAttemptEntity)
     private readonly attemptRepo: Repository<DeliveryAttemptEntity>,
+    private readonly mockProvidersService: MockProvidersService,
     private readonly dataSource: DataSource,
   ) { }
 
@@ -66,64 +68,55 @@ export class DeliveriesService {
   }
 
   private async issueInventory(delivery: DeliveryEntity, order: OrderEntity) {
-    // Pessimistic locking transaction to assign inventory safely
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      // 1. Double check delivery status
-      const currentDelivery = await queryRunner.manager.findOne(DeliveryEntity, {
-        where: { id: delivery.id },
-        lock: { mode: 'pessimistic_write' },
+    // We try ProviderA first
+    let res = await this.mockProvidersService.issue('ProviderA', delivery.requestId, delivery.sku, order.id);
+    
+    // If ProviderA fails, fallback to ProviderB
+    if (res.status === 'error' && res.reason !== 'out_of_stock') {
+      this.logger.warn(`ProviderA failed/timeout for ${delivery.requestId}, falling back to ProviderB`);
+      // Register attempt for ProviderA as failed
+      await this.attemptRepo.update({ requestId: delivery.requestId, provider: 'ProviderA' }, { status: 'failed', error: res.reason });
+      
+      // Create new attempt for ProviderB
+      delivery.provider = 'ProviderB';
+      await this.deliveryRepo.save(delivery);
+      
+      const fallbackAttempt = this.attemptRepo.create({
+        orderId: order.id,
+        requestId: delivery.requestId,
+        provider: 'ProviderB',
+        status: 'started',
       });
-
-      if (!currentDelivery || currentDelivery.status === 'success') {
-        await queryRunner.rollbackTransaction();
-        return;
-      }
-
-      // 2. Find available inventory item and lock it using SKIP LOCKED
-      // TypeORM's query builder allows pessimistic locks with skip locked
-      const availableItem = await queryRunner.manager.createQueryBuilder(InventoryEntity, 'inventory')
-        .where('inventory.sku = :sku', { sku: order.sku })
-        .andWhere('inventory.status = :status', { status: 'available' })
-        .setLock('pessimistic_write')
-        .setOnLocked('skip_locked')
-        .getOne();
-
-      if (!availableItem) {
-        // Out of stock
-        currentDelivery.status = 'failed';
-        await queryRunner.manager.save(currentDelivery);
-
-        order.status = 'out_of_stock';
-        await queryRunner.manager.save(order);
-
-        await queryRunner.commitTransaction();
-        return;
-      }
-
-      // 3. Assign item to order
-      availableItem.status = 'used';
-      availableItem.orderId = order.id;
-      await queryRunner.manager.save(availableItem);
-
-      currentDelivery.inventoryId = availableItem.id;
-      currentDelivery.code = availableItem.code;
-      currentDelivery.status = 'success';
-      await queryRunner.manager.save(currentDelivery);
-
-      order.status = 'delivered';
-      order.deliveryCode = availableItem.code;
-      await queryRunner.manager.save(order);
-
-      await queryRunner.commitTransaction();
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
+      await this.attemptRepo.save(fallbackAttempt);
+      
+      res = await this.mockProvidersService.issue('ProviderB', delivery.requestId, delivery.sku, order.id);
     }
+
+    if (res.status === 'error') {
+      if (res.reason === 'out_of_stock') {
+        delivery.status = 'failed';
+        await this.deliveryRepo.save(delivery);
+        order.status = 'out_of_stock';
+        await this.orderRepo.save(order);
+      } else {
+        // Both providers failed (or ProviderB failed)
+        await this.attemptRepo.update({ requestId: delivery.requestId, provider: delivery.provider }, { status: 'failed', error: res.reason });
+        delivery.status = 'failed';
+        await this.deliveryRepo.save(delivery);
+        order.status = 'delivery_failed';
+        await this.orderRepo.save(order);
+      }
+      return;
+    }
+
+    // Success
+    await this.attemptRepo.update({ requestId: delivery.requestId, provider: delivery.provider }, { status: 'success' });
+    delivery.status = 'success';
+    delivery.code = res.code;
+    await this.deliveryRepo.save(delivery);
+
+    order.status = 'delivered';
+    order.deliveryCode = res.code;
+    await this.orderRepo.save(order);
   }
 }

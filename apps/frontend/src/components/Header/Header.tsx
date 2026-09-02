@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import Container from "src/components/Container/Container"
 import CatalogDropdown from "./components/CatalogDropdown/CatalogDropdown"
 import Icon from "src/components/Icon/Icon"
@@ -13,6 +13,9 @@ export default function Header() {
   const catalogButtonId = useId()
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  const isAdmin = location.pathname.startsWith("/admin")
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -46,19 +49,27 @@ export default function Header() {
               id={catalogButtonId}
               className={styles.catalogButton}
               type="button"
-              aria-haspopup="menu"
-              aria-expanded={isCatalogOpen}
-              onClick={() => setIsCatalogOpen((v: boolean) => !v)}
+              aria-haspopup={!isAdmin ? "menu" : undefined}
+              aria-expanded={!isAdmin ? isCatalogOpen : undefined}
+              onClick={() => {
+                if (isAdmin) {
+                  navigate("/")
+                } else {
+                  setIsCatalogOpen((v: boolean) => !v)
+                }
+              }}
             >
-              <Icon name="catalog" />
-              <span className={styles.catalogButtonText}>Каталог</span>
+              {!isAdmin && <Icon name="catalog" />}
+              <span className={styles.catalogButtonText}>{isAdmin ? "Главная" : "Каталог"}</span>
             </button>
 
-            <CatalogDropdown
-              open={isCatalogOpen}
-              anchorId={catalogButtonId}
-              onClose={() => setIsCatalogOpen(false)}
-            />
+            {!isAdmin && (
+              <CatalogDropdown
+                open={isCatalogOpen}
+                anchorId={catalogButtonId}
+                onClose={() => setIsCatalogOpen(false)}
+              />
+            )}
           </div>
 
           {/* Search — all one unit: input + heart + button inside border */}

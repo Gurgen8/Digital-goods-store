@@ -23,6 +23,12 @@ export class OrderEntity {
   @Column({ nullable: true })
   deliveryCode: string;
 
+  @Column({ nullable: true })
+  promoCodeId: string;
+
+  @Column('int', { nullable: true })
+  originalAmount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

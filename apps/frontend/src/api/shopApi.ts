@@ -20,6 +20,12 @@ export const payOrder = (
     body: JSON.stringify(payload)
   })
 
+export const applyPromoCode = (id: string, code: string) =>
+  requestJson<{ ok: true; newAmount: number }>(`/api/orders/${id}/apply-promo`, {
+    method: "POST",
+    body: JSON.stringify({ code })
+  })
+
 export const getRecoveryOrders = () =>
   requestJson<Order[]>("/api/admin/recovery-orders")
 
