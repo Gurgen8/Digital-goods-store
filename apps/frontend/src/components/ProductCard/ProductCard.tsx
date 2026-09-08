@@ -32,7 +32,7 @@ export default memo(function ProductCard({
 
         <div className={styles.priceRow}>
           <span className={styles.price}>{product.priceRub} ₽</span>
-          {product.oldPriceRub && product.oldPriceRub > product.priceRub ? (
+          {product.oldPriceRub ? (
             <span className={styles.oldPrice}>{product.oldPriceRub} ₽</span>
           ) : null}
         </div>

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductEntity } from '@/database/entities/product.entity';
@@ -16,7 +16,11 @@ export class ProductsService {
   ) { }
 
   async findAll() {
-    const products = await this.productRepo.find();
+    const products = await this.productRepo.find({
+      order: {
+        createdAt: 'ASC'
+      }
+    });
 
     // Compute available stock for each product
     const counts = await this.inventoryRepo
@@ -38,6 +42,11 @@ export class ProductsService {
   }
 
   async updateProduct(sku: string, data: { price?: number; oldPrice?: number; stock?: number }) {
+    const product = await this.productRepo.findOneBy({ sku });
+    if (!product) {
+      throw new NotFoundException(`Product with sku '${sku}' not found`);
+    }
+
     if (data.price !== undefined || data.oldPrice !== undefined) {
       const updateData: any = {};
       if (data.price !== undefined) updateData.price = data.price;
