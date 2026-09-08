@@ -6,7 +6,7 @@ import { ApplyPromoDto } from './dto/apply-promo.dto';
 
 @Controller('api/orders')
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(private readonly ordersService: OrdersService) { }
 
   @Post()
   async createOrder(

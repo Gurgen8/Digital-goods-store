@@ -8,6 +8,7 @@ export type OrderStatus =
   | "out_of_stock"
   | "delivery_failed"
   | "payment_failed"
+  | "expired"
 
 export type Product = {
   id: string
@@ -28,6 +29,7 @@ export type Order = {
   promoCodeId?: string
   createdAt: string
   updatedAt: string
+  expiresAt?: string
   deliveryCode?: string
 }
 

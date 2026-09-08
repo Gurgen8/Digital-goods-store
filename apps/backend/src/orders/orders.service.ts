@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, OnModuleInit, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { OrderEntity } from '@/database/entities/order.entity';
@@ -8,8 +8,12 @@ import { InventoryEntity } from '@/database/entities/inventory.entity';
 import { WebhooksService } from '@/webhooks/webhooks.service';
 import { randomUUID } from 'crypto';
 
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 @Injectable()
-export class OrdersService {
+export class OrdersService implements OnModuleInit {
+  private readonly logger = new Logger(OrdersService.name);
+
   constructor(
     @InjectRepository(OrderEntity)
     private readonly orderRepo: Repository<OrderEntity>,
@@ -17,14 +21,50 @@ export class OrdersService {
     private readonly productRepo: Repository<ProductEntity>,
     private readonly webhooksService: WebhooksService,
     private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2,
   ) { }
+
+  onModuleInit() {
+    setInterval(() => this.releaseExpiredReservations(), 10000); // Check every 10 seconds
+  }
+
+  private async releaseExpiredReservations() {
+    try {
+      await this.dataSource.transaction(async manager => {
+        // Find expired orders that are still in 'created' status
+        const expiredOrders = await manager.createQueryBuilder(OrderEntity, 'o')
+          .setLock('pessimistic_write')
+          .where('o.status = :status', { status: 'created' })
+          .andWhere('o.expiresAt < :now', { now: new Date() })
+          .getMany();
+
+        for (const order of expiredOrders) {
+          order.status = 'expired';
+          await manager.save(OrderEntity, order);
+
+          // Release the inventory
+          const inv = await manager.findOne(InventoryEntity, { where: { orderId: order.id, status: 'reserved' } });
+          if (inv) {
+            inv.status = 'available';
+            inv.orderId = null;
+            await manager.save(InventoryEntity, inv);
+
+            this.eventEmitter.emit('product.updated', { sku: order.sku });
+            this.logger.log(`Released expired reservation for order ${order.id}, sku: ${order.sku}`);
+          }
+        }
+      });
+    } catch (e) {
+      this.logger.error('Error releasing expired reservations', e);
+    }
+  }
 
 
   async createOrder(productId: string, idempotencyKey?: string) {
     if (idempotencyKey) {
       const existing = await this.orderRepo.findOne({ where: { idempotencyKey } });
       if (existing) {
-        return { orderId: existing.id };
+        return { orderId: existing.id, expiresAt: existing.expiresAt };
       }
     }
 
@@ -33,30 +73,60 @@ export class OrdersService {
       throw new NotFoundException('Product not found');
     }
 
-    const order = this.orderRepo.create({
-      sku: product.sku,
-      amount: product.price,
-      currency: product.currency,
-      status: 'created',
-      idempotencyKey: idempotencyKey || undefined,
-    });
+    let orderId: string;
+    let expiresAt: Date;
 
     try {
-      await this.orderRepo.save(order);
+      await this.dataSource.transaction(async manager => {
+        // Find one available inventory
+        const inv = await manager.createQueryBuilder(InventoryEntity, 'inv')
+          .setLock('pessimistic_write')
+          .setOnLocked('skip_locked')
+          .where('inv.sku = :sku', { sku: product.sku })
+          .andWhere('inv.status = :status', { status: 'available' })
+          .limit(1)
+          .getOne();
+
+        if (!inv) {
+          throw new ConflictException('Товар только что раскупили');
+        }
+
+        const expires = new Date(Date.now() + 90 * 1000); // 1 minute 30 seconds
+
+        const order = manager.create(OrderEntity, {
+          sku: product.sku,
+          amount: product.price,
+          currency: product.currency,
+          status: 'created',
+          idempotencyKey: idempotencyKey || undefined,
+          expiresAt: expires,
+        });
+
+        await manager.save(OrderEntity, order);
+
+        inv.status = 'reserved';
+        inv.orderId = order.id;
+        await manager.save(InventoryEntity, inv);
+
+        orderId = order.id;
+        expiresAt = expires;
+      });
+      // Emit event outside transaction to ensure other connections read committed data
+      this.eventEmitter.emit('product.updated', { sku: product.sku });
     } catch (err: unknown) {
       if (err instanceof Error && 'code' in err && err.code === '23505' && idempotencyKey) {
         const existing = await this.orderRepo.findOne({ where: { idempotencyKey } });
         if (existing) {
-          return { orderId: existing.id };
+          return { orderId: existing.id, expiresAt: existing.expiresAt };
         }
       }
       throw err;
     }
 
     // Process any webhooks that might have arrived before the order was created
-    await this.webhooksService.processPendingWebhooksForOrder(order.id);
+    await this.webhooksService.processPendingWebhooksForOrder(orderId!);
 
-    return { orderId: order.id };
+    return { orderId: orderId!, expiresAt: expiresAt! };
   }
 
   async getOrder(id: string) {
@@ -81,6 +151,7 @@ export class OrdersService {
       status: order.status,
       createdAt: order.createdAt.toISOString(),
       updatedAt: order.updatedAt.toISOString(),
+      expiresAt: order.expiresAt ? order.expiresAt.toISOString() : undefined,
       deliveryCode: order.deliveryCode,
     };
   }
@@ -135,22 +206,8 @@ export class OrdersService {
         const o = await manager.findOne(OrderEntity, { where: { id }, lock: { mode: 'pessimistic_write' } });
         if (!o || o.status !== 'created') return;
 
-        // Attempt to reserve one key
-        const inv = await manager.createQueryBuilder(InventoryEntity, 'inv')
-          .setLock('pessimistic_write')
-          .setOnLocked('skip_locked')
-          .where('inv.sku = :sku', { sku: order.sku })
-          .andWhere('inv.status = :status', { status: 'available' })
-          .limit(1)
-          .getOne();
-
-        if (inv) {
-          inv.status = 'reserved';
-          inv.orderId = order.id;
-          await manager.save(InventoryEntity, inv);
-        } else {
-          // No keys available! The user is too late.
-          throw new ConflictException('Товар только что раскупили');
+        if (o.expiresAt && o.expiresAt.getTime() < Date.now()) {
+          throw new ConflictException('Время брони истекло, товар возвращен в продажу');
         }
       });
     }

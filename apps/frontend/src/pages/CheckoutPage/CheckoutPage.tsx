@@ -7,6 +7,7 @@ import Header from "src/components/Header/Header"
 import styles from "./CheckoutPage.module.css"
 import { useCheckout, translateStatus } from "./useCheckout"
 import { useShopStore } from "src/store/useShopStore"
+import { useCountdown } from "src/hooks/useCountdown"
 
 export default function CheckoutPage() {
   const { orderId } = useParams<{ orderId: string }>()
@@ -27,6 +28,10 @@ export default function CheckoutPage() {
   const displayAmount = (order?.status === "created" && !order?.promoCodeId && storeProduct)
     ? storeProduct.priceRub
     : order?.amount
+
+  const { isExpired, formattedTime } = useCountdown(order?.status === "created" ? order?.expiresAt : undefined)
+
+  const isFormDisabled = busy || isExpired
 
   return (
     <div className={styles.page}>
@@ -74,9 +79,15 @@ export default function CheckoutPage() {
 
                 {order.status === "created" ? (
                   <>
-                    {storeProduct?.stock === 0 && (
-                      <div className={styles.outOfStockWarning}>
-                        <span>⚠️</span> Извините, но товара на данный момент нет на складе.
+                    {order.expiresAt && !isExpired && (
+                      <div style={{ color: '#ff4444', fontWeight: 600, marginTop: 12, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                         ⏳ Бронь истекает через {formattedTime}
+                      </div>
+                    )}
+                    
+                    {isExpired && (
+                      <div className={styles.outOfStockWarning} style={{ backgroundColor: '#fff0f0', color: '#d32f2f' }}>
+                        <span>⚠️</span> Время брони истекло, товар возвращен в продажу.
                       </div>
                     )}
 
@@ -92,9 +103,9 @@ export default function CheckoutPage() {
                               setPromoCode(e.target.value)
                               setPromoError(null)
                             }}
-                            disabled={promoApplying || storeProduct?.stock === 0}
+                            disabled={promoApplying || isFormDisabled}
                           />
-                          <Button type="submit" disabled={promoApplying || !promoCode.trim() || storeProduct?.stock === 0}>
+                          <Button type="submit" disabled={promoApplying || !promoCode.trim() || isFormDisabled}>
                             Применить
                           </Button>
                         </form>
@@ -103,21 +114,29 @@ export default function CheckoutPage() {
                     )}
 
                     <div className={styles.actions}>
-                      <Button 
-                        type="button" 
-                        onClick={() => pay("success")} 
-                        disabled={busy || storeProduct?.stock === 0}
-                      >
-                        {storeProduct?.stock === 0 ? "Нет в наличии" : "Оплатить успешно"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        onClick={() => pay("failed")}
-                        disabled={busy || storeProduct?.stock === 0}
-                      >
-                        Ошибка оплаты
-                      </Button>
+                      {isExpired ? (
+                        <Link to="/" style={{ textDecoration: 'none' }}>
+                           <Button type="button" variant="secondary">Вернуться на витрину</Button>
+                        </Link>
+                      ) : (
+                        <>
+                          <Button 
+                            type="button" 
+                            onClick={() => pay("success")} 
+                            disabled={isFormDisabled}
+                          >
+                            Оплатить успешно
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => pay("failed")}
+                            disabled={isFormDisabled}
+                          >
+                            Ошибка оплаты
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </>
                 ) : (
