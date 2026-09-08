@@ -16,6 +16,7 @@ export type Product = {
   priceRub: number
   oldPriceRub?: number
   imageUrl: string
+  stock: number
 }
 
 export type Order = {

@@ -1,6 +1,7 @@
-import { Suspense, lazy } from "react"
+import { Suspense, lazy, useEffect } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import Spinner from "src/components/Spinner/Spinner"
+import { useShopStore } from "src/store/useShopStore"
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage"))
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage/CheckoutPage"))
@@ -9,6 +10,12 @@ const AdminPage = lazy(() => import("./pages/AdminPage/AdminPage"))
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 
 export default function App() {
+  const initStore = useShopStore(s => s.init)
+
+  useEffect(() => {
+    initStore()
+  }, [initStore])
+
   return (
     <Suspense fallback={<Spinner />}>
       <Routes>

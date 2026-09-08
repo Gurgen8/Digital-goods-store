@@ -32,7 +32,7 @@ export default memo(function ProductCard({
 
         <div className={styles.priceRow}>
           <span className={styles.price}>{product.priceRub} ₽</span>
-          {product.oldPriceRub ? (
+          {product.oldPriceRub && product.oldPriceRub > product.priceRub ? (
             <span className={styles.oldPrice}>{product.oldPriceRub} ₽</span>
           ) : null}
         </div>
@@ -41,10 +41,10 @@ export default memo(function ProductCard({
           <Button
             type="button"
             fullWidth
-            disabled={busy}
+            disabled={busy || product.stock === 0}
             onClick={() => onBuy(product.id)}
           >
-            Купить
+            {product.stock === 0 ? "Нет в наличии" : "Купить"}
           </Button>
         </div>
       </div>

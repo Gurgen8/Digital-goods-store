@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { InventoryEntity } from '@/database/entities/inventory.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class MockProvidersService {
@@ -10,7 +11,10 @@ export class MockProvidersService {
   public failureRateProviderA = 0.3;
   public failureRateProviderB = 0.1;
 
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(
+    private readonly dataSource: DataSource,
+    private readonly eventEmitter: EventEmitter2
+  ) {}
 
   async issue(providerName: 'ProviderA' | 'ProviderB', requestId: string, sku: string, orderId: string): Promise<{ status: 'ok'; code: string } | { status: 'error'; reason: string }> {
     this.logger.log(`[${providerName}] Received issue request: ${requestId} for SKU: ${sku}`);
@@ -88,6 +92,9 @@ export class MockProvidersService {
       await queryRunner.manager.save(availableItem);
 
       await queryRunner.commitTransaction();
+      
+      this.eventEmitter.emit('product.updated', { sku });
+
       return availableItem.code;
     } catch (err) {
       await queryRunner.rollbackTransaction();

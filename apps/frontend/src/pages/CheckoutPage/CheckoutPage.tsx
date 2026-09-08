@@ -6,6 +6,7 @@ import Footer from "src/components/Footer/Footer"
 import Header from "src/components/Header/Header"
 import styles from "./CheckoutPage.module.css"
 import { useCheckout, translateStatus } from "./useCheckout"
+import { useShopStore } from "src/store/useShopStore"
 
 export default function CheckoutPage() {
   const { orderId } = useParams<{ orderId: string }>()
@@ -21,6 +22,11 @@ export default function CheckoutPage() {
     pay,
     applyPromo,
   } = useCheckout(orderId)
+
+  const storeProduct = useShopStore(s => order ? s.getProduct(order.product.id) : undefined)
+  const displayAmount = (order?.status === "created" && !order?.promoCodeId && storeProduct)
+    ? storeProduct.priceRub
+    : order?.amount
 
   return (
     <div className={styles.page}>
@@ -61,13 +67,19 @@ export default function CheckoutPage() {
                       {order.amount} ₽
                     </>
                   ) : (
-                    <>{order.amount ?? order.product.priceRub} ₽</>
+                    <>{displayAmount ?? order.product.priceRub} ₽</>
                   )}
                 </div>
                 <div className={styles.hint}>Статус заказа: {translateStatus(order.status)}</div>
 
                 {order.status === "created" ? (
                   <>
+                    {storeProduct?.stock === 0 && (
+                      <div className={styles.outOfStockWarning}>
+                        <span>⚠️</span> Извините, но товара на данный момент нет на складе.
+                      </div>
+                    )}
+
                     {!order.promoCodeId && (
                       <>
                         <form className={styles.promoForm} onSubmit={applyPromo}>
@@ -80,9 +92,9 @@ export default function CheckoutPage() {
                               setPromoCode(e.target.value)
                               setPromoError(null)
                             }}
-                            disabled={promoApplying}
+                            disabled={promoApplying || storeProduct?.stock === 0}
                           />
-                          <Button type="submit" disabled={promoApplying || !promoCode.trim()}>
+                          <Button type="submit" disabled={promoApplying || !promoCode.trim() || storeProduct?.stock === 0}>
                             Применить
                           </Button>
                         </form>
@@ -91,14 +103,18 @@ export default function CheckoutPage() {
                     )}
 
                     <div className={styles.actions}>
-                      <Button type="button" onClick={() => pay("success")} disabled={busy}>
-                        Оплатить успешно
+                      <Button 
+                        type="button" 
+                        onClick={() => pay("success")} 
+                        disabled={busy || storeProduct?.stock === 0}
+                      >
+                        {storeProduct?.stock === 0 ? "Нет в наличии" : "Оплатить успешно"}
                       </Button>
                       <Button
                         type="button"
                         variant="secondary"
                         onClick={() => pay("failed")}
-                        disabled={busy}
+                        disabled={busy || storeProduct?.stock === 0}
                       >
                         Ошибка оплаты
                       </Button>

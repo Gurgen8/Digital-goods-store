@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ProductEntity } from '@/database/entities/product.entity';
 import { OrderEntity } from '@/database/entities/order.entity';
 import { InventoryEntity } from '@/database/entities/inventory.entity';
@@ -33,6 +34,7 @@ import { SeedService } from '@/database/seed.service';
       ],
       synchronize: true, // Auto-create schema for this test assignment
     }),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forFeature([ProductEntity, InventoryEntity, PromoCodeEntity]),
     ProductsModule,
     OrdersModule,

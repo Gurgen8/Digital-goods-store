@@ -72,6 +72,16 @@
   line-height: 1.4;
 }
 
+.outOfStockWarning {
+  color: var(--color-error);
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 @media (max-width: 900px) {
   .content {
     grid-template-columns: minmax(0, 1fr);

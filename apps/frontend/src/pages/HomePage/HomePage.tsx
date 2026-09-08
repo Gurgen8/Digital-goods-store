@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import type { Product } from "@repo/shared"
-import { createOrder, getProducts } from "src/api/shopApi"
+import { createOrder } from "src/api/shopApi"
+import { useShopStore } from "src/store/useShopStore"
 import Button from "src/components/Button/Button"
 import Chip from "src/components/Chip/Chip"
 import Container from "src/components/Container/Container"
@@ -18,27 +18,8 @@ import styles from "./HomePage.module.css"
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const [products, setProducts] = useState<Product[] | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { products, error, isLoading } = useShopStore()
   const [busyId, setBusyId] = useState<string | undefined>(undefined)
-
-  useEffect(() => {
-    let active = true
-    setError(null)
-    setProducts(null)
-    getProducts()
-      .then((p) => {
-        if (!active) return
-        setProducts(p)
-      })
-      .catch((e: unknown) => {
-        if (!active) return
-        setError(e instanceof Error ? e.message : "Something went wrong")
-      })
-    return () => {
-      active = false
-    }
-  }, [])
 
   const chips = useMemo(
     () => [
@@ -60,7 +41,7 @@ export default function HomePage() {
         const { orderId } = await createOrder(productId)
         navigate(`/checkout/${orderId}`)
       } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : "Something went wrong")
+        console.error(e)
       } finally {
         setBusyId(undefined)
       }
@@ -101,13 +82,13 @@ export default function HomePage() {
             </div>
           ) : null}
 
-          {!error && !products ? <SkeletonGrid /> : null}
+          {isLoading && products.length === 0 ? <SkeletonGrid /> : null}
 
-          {!error && products && products.length === 0 ? (
+          {!error && !isLoading && products.length === 0 ? (
             <div className={styles.errorBox}>No products</div>
           ) : null}
 
-          {!error && products && products.length > 0 ? (
+          {products.length > 0 ? (
             <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
           ) : null}
         </div>
@@ -118,8 +99,8 @@ export default function HomePage() {
         </div>
 
         <div className={styles.state}>
-          {!error && !products ? <SkeletonGrid /> : null}
-          {!error && products && products.length > 0 ? (
+          {isLoading && products.length === 0 ? <SkeletonGrid /> : null}
+          {products.length > 0 ? (
             <ProductGrid products={products.slice(4, 8)} onBuy={onBuy} busyId={busyId} />
           ) : null}
         </div>
@@ -130,8 +111,8 @@ export default function HomePage() {
         </div>
 
         <div className={styles.state}>
-          {!error && !products ? <SkeletonGrid /> : null}
-          {!error && products && products.length > 0 ? (
+          {isLoading && products.length === 0 ? <SkeletonGrid /> : null}
+          {products.length > 0 ? (
             <ProductGrid products={products.slice(8, 12)} onBuy={onBuy} busyId={busyId} />
           ) : null}
         </div>
