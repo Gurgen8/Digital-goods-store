@@ -73,29 +73,36 @@ export class MockProvidersService {
         return existing.code;
       }
 
-      const availableItem = await queryRunner.manager.createQueryBuilder(InventoryEntity, 'inventory')
-        .where('inventory.sku = :sku', { sku })
-        .andWhere('inventory.status = :status', { status: 'available' })
-        .setLock('pessimistic_write')
-        .setOnLocked('skip_locked')
-        .getOne();
+      let targetItem = await queryRunner.manager.findOne(InventoryEntity, {
+        where: { sku, orderId, status: 'reserved' },
+        lock: { mode: 'pessimistic_write' }
+      });
 
-      if (!availableItem) {
+      if (!targetItem) {
+        targetItem = await queryRunner.manager.createQueryBuilder(InventoryEntity, 'inventory')
+          .where('inventory.sku = :sku', { sku })
+          .andWhere('inventory.status = :status', { status: 'available' })
+          .setLock('pessimistic_write')
+          .setOnLocked('skip_locked')
+          .getOne();
+      }
+
+      if (!targetItem) {
         await queryRunner.rollbackTransaction();
         return null;
       }
 
-      availableItem.status = 'used';
-      availableItem.orderId = orderId;
-      availableItem.requestId = requestId;
-      availableItem.provider = provider;
-      await queryRunner.manager.save(availableItem);
+      targetItem.status = 'used';
+      targetItem.orderId = orderId;
+      targetItem.requestId = requestId;
+      targetItem.provider = provider;
+      await queryRunner.manager.save(targetItem);
 
       await queryRunner.commitTransaction();
       
       this.eventEmitter.emit('product.updated', { sku });
 
-      return availableItem.code;
+      return targetItem.code;
     } catch (err) {
       await queryRunner.rollbackTransaction();
       throw err;

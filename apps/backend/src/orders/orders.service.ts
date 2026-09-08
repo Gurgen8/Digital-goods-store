@@ -4,6 +4,7 @@ import { Repository, DataSource } from 'typeorm';
 import { OrderEntity } from '@/database/entities/order.entity';
 import { ProductEntity } from '@/database/entities/product.entity';
 import { PromoCodeEntity } from '@/database/entities/promo-code.entity';
+import { InventoryEntity } from '@/database/entities/inventory.entity';
 import { WebhooksService } from '@/webhooks/webhooks.service';
 import { randomUUID } from 'crypto';
 
@@ -129,17 +130,45 @@ export class OrdersService {
       throw new NotFoundException('Order not found');
     }
 
+    if (result === 'success') {
+      await this.dataSource.transaction(async manager => {
+        const o = await manager.findOne(OrderEntity, { where: { id }, lock: { mode: 'pessimistic_write' } });
+        if (!o || o.status !== 'created') return;
+
+        // Attempt to reserve one key
+        const inv = await manager.createQueryBuilder(InventoryEntity, 'inv')
+          .setLock('pessimistic_write')
+          .setOnLocked('skip_locked')
+          .where('inv.sku = :sku', { sku: order.sku })
+          .andWhere('inv.status = :status', { status: 'available' })
+          .limit(1)
+          .getOne();
+
+        if (inv) {
+          inv.status = 'reserved';
+          inv.orderId = order.id;
+          await manager.save(InventoryEntity, inv);
+        } else {
+          // No keys available! The user is too late.
+          throw new ConflictException('Товар только что раскупили');
+        }
+      });
+    }
+
     // Since we don't have real payment, we trigger a mock webhook event.
     // In real life, the client redirects to payment gateway, which sends webhook.
     const eventId = `mock_evt_${randomUUID()}`;
-    await this.webhooksService.processPaymentWebhook({
-      event_id: eventId,
-      order_id: id,
-      status: result === 'success' ? 'paid' : 'failed',
-      amount: order.amount,
-      currency: order.currency,
-      created_at: new Date().toISOString(),
-    });
+    // Delay webhook slightly to simulate real payment process
+    setTimeout(() => {
+      this.webhooksService.processPaymentWebhook({
+        event_id: eventId,
+        order_id: id,
+        status: result === 'success' ? 'paid' : 'failed',
+        amount: order.amount,
+        currency: order.currency,
+        created_at: new Date().toISOString(),
+      }).catch(e => console.error(e));
+    }, 1000);
 
     return { ok: true };
   }

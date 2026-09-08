@@ -14,14 +14,14 @@ export class InventoryEntity {
   @Column({ default: 'available' })
   status: string;
 
-  @Column({ nullable: true, unique: true })
-  orderId: string;
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  orderId: string | null;
 
-  @Column({ nullable: true, unique: true })
-  requestId: string;
+  @Column({ type: 'varchar', nullable: true, unique: true })
+  requestId: string | null;
 
-  @Column({ nullable: true })
-  provider: string;
+  @Column({ type: 'varchar', nullable: true })
+  provider: string | null;
 
   @CreateDateColumn()
   createdAt: Date;
