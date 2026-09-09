@@ -3,9 +3,10 @@ import { requestJson } from "./client"
 
 export const getProducts = () => requestJson<Product[]>("/api/products")
 
-export const createOrder = (productId: string) =>
-  requestJson<{ orderId: string }>("/api/orders", {
+export const createOrder = (productId: string, idempotencyKey?: string) =>
+  requestJson<{ orderId: string; expiresAt: string }>("/api/orders", {
     method: "POST",
+    headers: idempotencyKey ? { "idempotency-key": idempotencyKey } : undefined,
     body: JSON.stringify({ productId })
   })
 

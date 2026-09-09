@@ -45,6 +45,10 @@ export function useCheckout(orderId: string | undefined) {
       .then((o) => {
         if (!active) return;
         setOrder(o);
+        // If the order is no longer pending payment, clear it from localStorage
+        if (o.status !== 'created' && o.product?.id) {
+          localStorage.removeItem(`active_order_${o.product.id}`);
+        }
       })
       .catch((e: unknown) => {
         if (!active) return;
@@ -60,6 +64,11 @@ export function useCheckout(orderId: string | undefined) {
     try {
       setBusy(true);
       await payOrder(orderId, { result, currency: '$' });
+
+      if (order?.product?.id) {
+        localStorage.removeItem(`active_order_${order.product.id}`);
+      }
+
       navigate(`/orders/${orderId}`);
     } catch (e: unknown) {
       setError(translateError(e instanceof Error ? e.message : 'Something went wrong'));

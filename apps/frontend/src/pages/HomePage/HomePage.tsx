@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { createOrder } from "src/api/shopApi"
 import { useShopStore } from "src/store/useShopStore"
+import { v4 as uuidv4 } from "uuid"
 import Button from "src/components/Button/Button"
 import Chip from "src/components/Chip/Chip"
 import Container from "src/components/Container/Container"
@@ -38,7 +39,30 @@ export default function HomePage() {
     async (productId: string) => {
       try {
         setBusyId(productId)
-        const { orderId } = await createOrder(productId)
+
+        const storageKey = `active_order_${productId}`
+        const storedStr = localStorage.getItem(storageKey)
+        if (storedStr) {
+          try {
+            const stored = JSON.parse(storedStr)
+            if (stored.orderId && stored.expiresAt) {
+              const expires = new Date(stored.expiresAt).getTime()
+              if (expires > Date.now()) {
+                // Active order still exists and not expired!
+                navigate(`/checkout/${stored.orderId}`)
+                return
+              }
+            }
+          } catch (e) {
+            // ignore JSON parse error
+          }
+        }
+
+        const idempotencyKey = uuidv4()
+        const { orderId, expiresAt } = await createOrder(productId, idempotencyKey)
+        
+        localStorage.setItem(storageKey, JSON.stringify({ orderId, expiresAt }))
+
         navigate(`/checkout/${orderId}`)
       } catch (e: unknown) {
         console.error(e)

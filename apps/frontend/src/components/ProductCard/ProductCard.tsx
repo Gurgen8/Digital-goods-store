@@ -1,4 +1,4 @@
-import { memo } from "react"
+import { memo, useEffect, useState } from "react"
 import type { Product } from "@repo/shared"
 import Button from "src/components/Button/Button"
 import styles from "./ProductCard.module.css"
@@ -12,6 +12,44 @@ export default memo(function ProductCard({
   onBuy: (productId: string) => void
   busy?: boolean
 }) {
+  const [hasActiveOrder, setHasActiveOrder] = useState(false)
+
+  useEffect(() => {
+    const checkActiveOrder = () => {
+      const storageKey = `active_order_${product.id}`
+      const storedStr = localStorage.getItem(storageKey)
+      if (storedStr) {
+        try {
+          const stored = JSON.parse(storedStr)
+          if (stored.orderId && stored.expiresAt) {
+            const expires = new Date(stored.expiresAt).getTime()
+            if (expires > Date.now()) {
+              setHasActiveOrder(true)
+              return
+            } else {
+              // Timer has expired, clean up local storage
+              localStorage.removeItem(storageKey)
+            }
+          }
+        } catch (e) {}
+      }
+      setHasActiveOrder(false)
+    }
+
+    checkActiveOrder()
+    const intervalId = setInterval(checkActiveOrder, 1000)
+    window.addEventListener("focus", checkActiveOrder)
+    return () => {
+      clearInterval(intervalId)
+      window.removeEventListener("focus", checkActiveOrder)
+    }
+  }, [product.id])
+
+  const isDisabled = busy || (!hasActiveOrder && product.stock === 0)
+  const buttonText = hasActiveOrder 
+    ? "Вернуться к оплате" 
+    : (product.stock === 0 ? "Нет в наличии" : "Купить")
+
   return (
     <article className={styles.card}>
       <div className={styles.media}>
@@ -41,14 +79,13 @@ export default memo(function ProductCard({
           <Button
             type="button"
             fullWidth
-            disabled={busy || product.stock === 0}
+            disabled={isDisabled}
             onClick={() => onBuy(product.id)}
           >
-            {product.stock === 0 ? "Нет в наличии" : "Купить"}
+            {buttonText}
           </Button>
         </div>
       </div>
     </article>
   )
-}
-)
+})
