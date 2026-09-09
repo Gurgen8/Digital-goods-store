@@ -1,9 +1,7 @@
 import type { Product } from "@repo/shared"
 
-const img = (prompt: string) =>
-  `https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=${encodeURIComponent(
-    prompt
-  )}&image_size=landscape_4_3`
+const img = (prompt: string, index: number) =>
+  `https://picsum.photos/seed/${encodeURIComponent(prompt).substring(0, 10)}${index}/400/300.webp`
 
 export const products: Product[] = [
   {
@@ -14,7 +12,7 @@ export const products: Product[] = [
     priceRub: 990,
     oldPriceRub: 1990,
     stock: 10,
-    imageUrl: img("modern dark sci fi game cover art, red accent lighting, bold composition")
+    imageUrl: img("modern dark sci fi game cover art, red accent lighting, bold composition", 0)
   },
   {
     id: "pubg-mobile-topup",
@@ -24,7 +22,7 @@ export const products: Product[] = [
     priceRub: 139,
     oldPriceRub: 199,
     stock: 10,
-    imageUrl: img("mobile shooter game themed cover art, energetic, blue orange lighting")
+    imageUrl: img("mobile shooter game themed cover art, energetic, blue orange lighting", 1)
   },
   {
     id: "roblox-gift-card",
@@ -34,7 +32,7 @@ export const products: Product[] = [
     priceRub: 499,
     oldPriceRub: 699,
     stock: 10,
-    imageUrl: img("colorful playful game gift card cover, minimal, high contrast")
+    imageUrl: img("colorful playful game gift card cover, minimal, high contrast", 2)
   },
   {
     id: "telegram-premium",
@@ -44,7 +42,7 @@ export const products: Product[] = [
     priceRub: 399,
     oldPriceRub: 499,
     stock: 10,
-    imageUrl: img("clean premium subscription card cover, blue white gradient, minimal icons")
+    imageUrl: img("clean premium subscription card cover, blue white gradient, minimal icons", 3)
   },
   {
     id: "playstation-plus",
@@ -54,7 +52,7 @@ export const products: Product[] = [
     priceRub: 1290,
     oldPriceRub: 1590,
     stock: 10,
-    imageUrl: img("gaming subscription cover art, dark background, neon blue glow, minimal")
+    imageUrl: img("gaming subscription cover art, dark background, neon blue glow, minimal", 4)
   },
   {
     id: "tiktok-coins",
@@ -64,7 +62,7 @@ export const products: Product[] = [
     priceRub: 299,
     oldPriceRub: 349,
     stock: 10,
-    imageUrl: img("short video social app themed cover art, black background, neon accents")
+    imageUrl: img("short video social app themed cover art, black background, neon accents", 5)
   },
   {
     id: "app-store-gift",
@@ -74,7 +72,7 @@ export const products: Product[] = [
     priceRub: 999,
     oldPriceRub: 1099,
     stock: 10,
-    imageUrl: img("minimal gift card cover, soft gradient, premium, clean typography")
+    imageUrl: img("minimal gift card cover, soft gradient, premium, clean typography", 6)
   },
   {
     id: "chatgpt-plus",
@@ -84,7 +82,7 @@ export const products: Product[] = [
     priceRub: 1990,
     oldPriceRub: 2190,
     stock: 10,
-    imageUrl: img("modern AI subscription cover, clean white background, subtle green accent")
+    imageUrl: img("modern AI subscription cover, clean white background, subtle green accent", 7)
   },
   {
     id: "wow-subscription",
@@ -94,7 +92,7 @@ export const products: Product[] = [
     priceRub: 1490,
     oldPriceRub: 1790,
     stock: 10,
-    imageUrl: img("modern dark sci fi game cover art, red accent lighting, bold composition")
+    imageUrl: img("modern dark sci fi game cover art, red accent lighting, bold composition", 8)
   },
   {
     id: "valorant-points",
@@ -104,7 +102,7 @@ export const products: Product[] = [
     priceRub: 590,
     oldPriceRub: 790,
     stock: 10,
-    imageUrl: img("mobile shooter game themed cover art, energetic, blue orange lighting")
+    imageUrl: img("mobile shooter game themed cover art, energetic, blue orange lighting", 9)
   },
   {
     id: "netflix-premium",
@@ -114,7 +112,7 @@ export const products: Product[] = [
     priceRub: 899,
     oldPriceRub: 1099,
     stock: 10,
-    imageUrl: img("colorful playful game gift card cover, minimal, high contrast")
+    imageUrl: img("colorful playful game gift card cover, minimal, high contrast", 10)
   },
   {
     id: "xbox-game-pass",
@@ -124,6 +122,6 @@ export const products: Product[] = [
     priceRub: 1190,
     oldPriceRub: 1490,
     stock: 10,
-    imageUrl: img("gaming subscription cover art, dark background, neon blue glow, minimal")
+    imageUrl: img("gaming subscription cover art, dark background, neon blue glow, minimal", 11)
   }
 ]

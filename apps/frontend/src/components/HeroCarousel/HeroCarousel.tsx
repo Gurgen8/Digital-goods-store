@@ -77,15 +77,11 @@ export default function HeroCarousel() {
           <div className={styles.visual} aria-hidden="true" />
         </div>
 
-        <div className={styles.dots} role="tablist" aria-label="Слайды">
+        <div className={styles.dots} aria-hidden="true">
           {slides.map((_, i: number) => (
-            <button
+            <div
               key={i}
-              type="button"
               className={`${styles.dot} ${i === index ? styles.dotActive : ""}`}
-              aria-label={`Слайд ${i + 1}`}
-              aria-pressed={i === index}
-              onClick={() => setIndex(i)}
             />
           ))}
         </div>

@@ -34,7 +34,7 @@ export default function CheckoutPage() {
   const isFormDisabled = busy || isExpired
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <Header />
       <Container>
         <div className={styles.content}>
@@ -56,6 +56,10 @@ export default function CheckoutPage() {
                     className={styles.thumb}
                     src={order.product.imageUrl}
                     alt={order.product.title}
+                    loading="lazy"
+                    decoding="async"
+                    width={80}
+                    height={80}
                   />
                   <div>
                     <div className={styles.pTitle}>{order.product.title}</div>
@@ -80,13 +84,13 @@ export default function CheckoutPage() {
                 {order.status === "created" ? (
                   <>
                     {order.expiresAt && !isExpired && (
-                      <div style={{ color: '#ff4444', fontWeight: 600, marginTop: 12, marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <div className={styles.timerWarning}>
                          ⏳ Бронь истекает через {formattedTime}
                       </div>
                     )}
                     
                     {isExpired && (
-                      <div className={styles.outOfStockWarning} style={{ backgroundColor: '#fff0f0', color: '#d32f2f' }}>
+                      <div className={styles.outOfStockWarning}>
                         <span>⚠️</span> Время брони истекло, товар возвращен в продажу.
                       </div>
                     )}
@@ -115,7 +119,7 @@ export default function CheckoutPage() {
 
                     <div className={styles.actions}>
                       {isExpired ? (
-                        <Link to="/" style={{ textDecoration: 'none' }}>
+                        <Link to="/" className={styles.homeLink}>
                            <Button type="button" variant="secondary">Вернуться на витрину</Button>
                         </Link>
                       ) : (
@@ -157,7 +161,7 @@ export default function CheckoutPage() {
         </div>
       </Container>
       <Footer />
-    </div>
+    </main>
   )
 }
 

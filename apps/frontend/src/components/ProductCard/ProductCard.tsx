@@ -70,6 +70,9 @@ export default memo(function ProductCard({
           src={product.imageUrl}
           alt={product.title}
           loading="lazy"
+          decoding="async"
+          width={400}
+          height={300}
         />
       </div>
       <div className={styles.body}>

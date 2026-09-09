@@ -75,7 +75,7 @@ export default function OrderPage() {
   }, [order])
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <Header />
       <Container>
         <div className={styles.wrap}>
@@ -99,6 +99,10 @@ export default function OrderPage() {
                     className={styles.thumb}
                     src={order.product.imageUrl}
                     alt={order.product.title}
+                    loading="lazy"
+                    decoding="async"
+                    width={80}
+                    height={80}
                   />
                   <div>
                     <div className={styles.pTitle}>{order.product.title}</div>
@@ -161,7 +165,7 @@ export default function OrderPage() {
       </Container>
       <Footer />
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
-    </div>
+    </main>
   )
 }
 

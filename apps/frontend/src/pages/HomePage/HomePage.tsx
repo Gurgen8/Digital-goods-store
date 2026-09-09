@@ -92,7 +92,7 @@ export default function HomePage() {
   const isFiltered = !!searchParam || !!categoryParam
 
   return (
-    <div className={styles.page}>
+    <main className={styles.page}>
       <Header />
 
       <Container>
@@ -166,6 +166,6 @@ export default function HomePage() {
         <Reviews />
       </Container>
       <Footer />
-    </div>
+    </main>
   )
 }

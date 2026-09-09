@@ -83,6 +83,7 @@ export default function Header() {
               id={catalogButtonId}
               className={styles.catalogButton}
               type="button"
+              aria-label={isAdmin ? "Главная" : "Каталог"}
               aria-haspopup={!isAdmin ? "menu" : undefined}
               aria-expanded={!isAdmin ? isCatalogOpen : undefined}
               onClick={() => {
