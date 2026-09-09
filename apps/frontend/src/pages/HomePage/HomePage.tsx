@@ -74,12 +74,14 @@ export default function HomePage() {
 
         const idempotencyKey = uuidv4()
         const { orderId, expiresAt } = await createOrder(productId, idempotencyKey)
-        
+
         localStorage.setItem(storageKey, JSON.stringify({ orderId, expiresAt }))
 
         navigate(`/checkout/${orderId}`)
       } catch (e: unknown) {
         console.error(e)
+        const errorMessage = e instanceof Error ? e.message : 'Произошла ошибка при покупке';
+        alert(errorMessage);
       } finally {
         setBusyId(undefined)
       }
