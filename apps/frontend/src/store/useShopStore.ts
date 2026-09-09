@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { getProducts } from 'src/api/shopApi'
+import { getProducts, getSingleProduct } from 'src/api/shopApi'
 import { API_URL } from 'src/api/client'
 import { ShopStore } from './types';
 
@@ -70,11 +70,18 @@ export const useShopStore = create<ShopStore>((set, get) => ({
       eventSource = new EventSource(`${API_URL}/api/products/stream`)
 
       eventSource.onmessage = async (event) => {
-        console.log("SSE Event Received:", event.data)
-        // Simple but effective: refetch all products when any product updates
-        // We use the current search and category from state!
-        const state = get()
-        await state.fetchFilteredProducts(state.search, state.category)
+        try {
+          const payload = JSON.parse(event.data);
+          if (payload && payload.sku) {
+            // Update only the specific product instead of refetching all
+            const updatedProduct = await getSingleProduct(payload.sku);
+            set((state) => ({
+              products: state.products.map(p => p.id === payload.sku ? updatedProduct : p)
+            }));
+          }
+        } catch (e) {
+          console.error("Failed to process SSE message", e);
+        }
       }
 
       eventSource.onerror = async (error) => {
@@ -86,6 +93,13 @@ export const useShopStore = create<ShopStore>((set, get) => ({
         const state = get()
         await state.fetchFilteredProducts(state.search, state.category)
       }
+    }
+  },
+
+  destroy: () => {
+    if (eventSource) {
+      eventSource.close();
+      eventSource = null;
     }
   }
 }))

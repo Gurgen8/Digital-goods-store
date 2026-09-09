@@ -41,6 +41,21 @@ export class ProductsController {
       })
     );
   }
+
+  @Get(':sku')
+  async getProduct(@Param('sku') sku: string) {
+    const p = await this.productsService.findOneDetailed(sku);
+    return {
+      id: p.id,
+      title: p.name,
+      subtitle: p.subtitle,
+      category: p.category,
+      priceRub: p.price,
+      oldPriceRub: p.oldPrice,
+      imageUrl: p.image,
+      stock: p.stock,
+    };
+  }
 }
 
 @ApiTags('admin')

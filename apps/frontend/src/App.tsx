@@ -11,10 +11,12 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"))
 
 export default function App() {
   const initStore = useShopStore(s => s.init)
+  const destroyStore = useShopStore(s => s.destroy)
 
   useEffect(() => {
     initStore()
-  }, [initStore])
+    return () => destroyStore()
+  }, [initStore, destroyStore])
 
   return (
     <Suspense fallback={<Spinner />}>

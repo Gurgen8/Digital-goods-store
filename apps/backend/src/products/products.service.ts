@@ -31,12 +31,16 @@ export class ProductsService {
       }
     });
 
+    const skus = products.map(p => p.sku);
+    if (skus.length === 0) return [];
+
     // Compute available stock for each product
     const counts = await this.inventoryRepo
       .createQueryBuilder('inv')
       .select('inv.sku', 'sku')
       .addSelect('COUNT(*)', 'count')
       .where('inv.status = :status', { status: 'available' })
+      .andWhere('inv.sku IN (:...skus)', { skus })
       .groupBy('inv.sku')
       .getRawMany();
 
@@ -48,6 +52,22 @@ export class ProductsService {
       ...p,
       stock: countMap.get(p.sku) || 0,
     }));
+  }
+
+  async findOneDetailed(sku: string) {
+    const product = await this.productRepo.findOneBy({ sku });
+    if (!product) {
+      throw new NotFoundException(`Product with sku '${sku}' not found`);
+    }
+
+    const stock = await this.inventoryRepo.count({
+      where: { sku, status: 'available' }
+    });
+
+    return {
+      ...product,
+      stock,
+    };
   }
 
   async updateProduct(sku: string, data: { price?: number; oldPrice?: number; stock?: number }) {

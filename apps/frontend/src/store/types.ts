@@ -11,4 +11,5 @@ export type ShopStore = {
     init: (search?: string, category?: string) => void
     fetchFilteredProducts: (search?: string, category?: string) => Promise<void>
     getProduct: (sku: string) => Product | undefined
+    destroy: () => void
 }

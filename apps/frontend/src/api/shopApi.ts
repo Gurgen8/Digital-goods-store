@@ -12,6 +12,10 @@ export const getProducts = (search?: string, category?: string, signal?: AbortSi
   return requestJson<Product[]>(url, { signal })
 }
 
+export const getSingleProduct = (sku: string) => {
+  return requestJson<Product>(`/api/products/${sku}`)
+}
+
 export const createOrder = (productId: string, idempotencyKey?: string) =>
   requestJson<{ orderId: string; expiresAt: string }>("/api/orders", {
     method: "POST",

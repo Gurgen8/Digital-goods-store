@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react"
+import { memo, useEffect, useState, useRef } from "react"
 import type { Product } from "@repo/shared"
 import Button from "src/components/Button/Button"
 import styles from "./ProductCard.module.css"
@@ -13,6 +13,13 @@ export default memo(function ProductCard({
   busy?: boolean
 }) {
   const [hasActiveOrder, setHasActiveOrder] = useState(false)
+  const [optimisticStock, setOptimisticStock] = useState<number | null>(null)
+  const hasActiveOrderRef = useRef(hasActiveOrder)
+  hasActiveOrderRef.current = hasActiveOrder
+
+  useEffect(() => {
+    setOptimisticStock(null)
+  }, [product])
 
   useEffect(() => {
     const checkActiveOrder = () => {
@@ -29,9 +36,13 @@ export default memo(function ProductCard({
             } else {
               // Timer has expired, clean up local storage
               localStorage.removeItem(storageKey)
+              if (hasActiveOrderRef.current) {
+                // Optimistically assume stock is back
+                setOptimisticStock(1)
+              }
             }
           }
-        } catch (e) {}
+        } catch (e) { }
       }
       setHasActiveOrder(false)
     }
@@ -45,10 +56,11 @@ export default memo(function ProductCard({
     }
   }, [product.id])
 
-  const isDisabled = busy || (!hasActiveOrder && product.stock === 0)
-  const buttonText = hasActiveOrder 
-    ? "Вернуться к оплате" 
-    : (product.stock === 0 ? "Нет в наличии" : "Купить")
+  const effectiveStock = optimisticStock !== null ? optimisticStock : product.stock;
+  const isDisabled = busy || (!hasActiveOrder && effectiveStock === 0)
+  const buttonText = hasActiveOrder
+    ? "Вернуться к оплате"
+    : (effectiveStock === 0 ? "Нет в наличии" : "Купить")
 
   return (
     <article className={styles.card}>
