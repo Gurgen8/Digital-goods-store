@@ -9,7 +9,7 @@ async function main() {
     // 1. We need to find the product ID for the SKU first
     const productsRes = await fetch(`${API_URL}/products`);
     const products = await productsRes.json();
-    const product = products.find((p: any) => p.id === sku);
+    const product = products.find((p: { id: string, priceRub: number }) => p.id === sku);
 
     if (!product) {
         console.error('❌ Product not found!');

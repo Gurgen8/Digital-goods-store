@@ -29,6 +29,9 @@ export class ProductEntity {
   @Column()
   image: string;
 
+  @Column({ nullable: true })
+  category: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

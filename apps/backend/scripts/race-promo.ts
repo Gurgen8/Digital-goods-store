@@ -8,7 +8,7 @@ async function main() {
 
     const productsRes = await fetch(`${API_URL}/products`);
     const products = await productsRes.json();
-    const product = products.find((p: any) => p.id === sku);
+    const product = products.find((p: { id: string }) => p.id === sku);
 
     if (!product) {
         console.error('❌ Product not found!');

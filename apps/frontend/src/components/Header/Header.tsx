@@ -1,9 +1,10 @@
 import { useEffect, useId, useRef, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import Container from "src/components/Container/Container"
 import CatalogDropdown from "./components/CatalogDropdown/CatalogDropdown"
 import Icon from "src/components/Icon/Icon"
 import LoginModal from "src/components/LoginModal/LoginModal"
+import { useDebounce } from "src/hooks/useDebounce"
 import styles from "./Header.module.css"
 
 
@@ -14,6 +15,13 @@ export default function Header() {
   const wrapRef = useRef<HTMLDivElement | null>(null)
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+
+  const urlSearch = searchParams.get("search") || ""
+  const [searchValue, setSearchValue] = useState(urlSearch)
+  
+  // Откладываем обновление URL на 400мс после того как пользователь перестал печатать
+  const debouncedSearchValue = useDebounce(searchValue, 400)
 
   const isAdmin = location.pathname.startsWith("/admin")
 
@@ -23,6 +31,25 @@ export default function Header() {
       navigate(location.pathname, { replace: true })
     }
   }, [location.search, location.pathname, navigate])
+
+  // Синхронизируем начальное значение, если URL поменялся извне
+  useEffect(() => {
+    setSearchValue(urlSearch)
+  }, [urlSearch])
+
+  // Когда debounced-значение меняется, обновляем URL
+  useEffect(() => {
+    // Избегаем лишнего пуша, если значение совпадает с тем, что уже в URL
+    if (debouncedSearchValue === urlSearch) return;
+
+    const params = new URLSearchParams(location.search);
+    if (debouncedSearchValue) {
+      params.set("search", debouncedSearchValue);
+    } else {
+      params.delete("search");
+    }
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+  }, [debouncedSearchValue, location.search, location.pathname, navigate, urlSearch])
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -86,6 +113,8 @@ export default function Header() {
               type="search"
               placeholder="Игра, приложение или услуга..."
               aria-label="Поиск"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
             <button
               className={styles.favoriteButton}

@@ -14,6 +14,7 @@ export type Product = {
   id: string
   title: string
   subtitle?: string
+  category?: string
   priceRub: number
   oldPriceRub?: number
   imageUrl: string

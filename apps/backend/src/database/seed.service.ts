@@ -29,6 +29,7 @@ export class SeedService implements OnApplicationBootstrap {
         sku: p.id,
         name: p.title,
         subtitle: p.subtitle,
+        category: p.category,
         type: 'key',
         price: p.priceRub,
         oldPrice: p.oldPriceRub,

@@ -1,55 +1,91 @@
 import { create } from 'zustand'
-import { getProducts } from '../api/shopApi'
-import { API_URL } from '../api/client'
+import { getProducts } from 'src/api/shopApi'
+import { API_URL } from 'src/api/client'
 import { ShopStore } from './types';
 
-
 let eventSource: EventSource | null = null;
+let abortController: AbortController | null = null;
 
 export const useShopStore = create<ShopStore>((set, get) => ({
   products: [],
-  isLoading: true,
+  isLoading: true, // Only true on the very first load
+  isFetching: false, // True during any background request
+  hasInit: false,
   error: null,
+  search: undefined,
+  category: undefined,
 
   getProduct: (sku: string) => {
     return get().products.find(p => p.id === sku)
   },
 
-  init: async () => {
+  fetchFilteredProducts: async (search?: string, category?: string) => {
+    // If there's an ongoing fetch, abort it to avoid race conditions
+    if (abortController) {
+      abortController.abort()
+    }
+    abortController = new AbortController()
+
     try {
-      set({ isLoading: true, error: null })
-      const products = await getProducts()
-      set({ products, isLoading: false })
+      const isInitialLoad = !get().hasInit;
 
-      if (!eventSource) {
-        // Automatically reconnects on failure
-        eventSource = new EventSource(`${API_URL}/api/products/stream`)
+      set({
+        search,
+        category,
+        isFetching: true,
+        // Only show full skeleton screen on very first app load
+        isLoading: isInitialLoad ? true : false,
+        error: null
+      })
 
-        eventSource.onmessage = async (event) => {
-          console.log("SSE Event Received:", event.data)
-          // Simple but effective: refetch all products when any product updates
-          const freshProducts = await getProducts()
-          set({ products: freshProducts })
-        }
-
-        // On open, we should also fetch once just to be sure we didn't miss events
-        // between initial fetch and SSE connection open, but our fetch is already fresh enough.
-
-        eventSource.onerror = async (error) => {
-          console.error("SSE Error:", error)
-          // EventSource has built-in auto-reconnect. When it reconnects, it might have missed events.
-          // The onopen event fires when it reconnects.
-        }
-
-        eventSource.onopen = async () => {
-          console.log("SSE Connection opened/reconnected")
-          // Refetch to sync state after a disconnect
-          const freshProducts = await getProducts()
-          set({ products: freshProducts })
-        }
+      const products = await getProducts(search, category, abortController.signal)
+      set({
+        products,
+        isLoading: false,
+        isFetching: false,
+        hasInit: true,
+        error: null
+      })
+    } catch (err: unknown) {
+      const error = err as Error;
+      if (error.name === 'AbortError') {
+        // Ignored, because a new fetch started
+        return
       }
-    } catch (err: any) {
-      set({ error: err.message || 'Failed to fetch products', isLoading: false })
+      set({
+        error: error.message || 'Failed to fetch products',
+        isLoading: false,
+        isFetching: false,
+        hasInit: true
+      })
+    }
+  },
+
+  init: async (search?: string, category?: string) => {
+    // Fetch products initially
+    await get().fetchFilteredProducts(search, category)
+
+    if (!eventSource) {
+      // Automatically reconnects on failure
+      eventSource = new EventSource(`${API_URL}/api/products/stream`)
+
+      eventSource.onmessage = async (event) => {
+        console.log("SSE Event Received:", event.data)
+        // Simple but effective: refetch all products when any product updates
+        // We use the current search and category from state!
+        const state = get()
+        await state.fetchFilteredProducts(state.search, state.category)
+      }
+
+      eventSource.onerror = async (error) => {
+        console.error("SSE Error:", error)
+      }
+
+      eventSource.onopen = async () => {
+        console.log("SSE Connection opened/reconnected")
+        const state = get()
+        await state.fetchFilteredProducts(state.search, state.category)
+      }
     }
   }
 }))

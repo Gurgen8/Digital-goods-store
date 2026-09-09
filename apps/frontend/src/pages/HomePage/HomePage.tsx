@@ -1,5 +1,5 @@
-import { useCallback, useMemo, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useCallback, useMemo, useState, useEffect } from "react"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { createOrder } from "src/api/shopApi"
 import { useShopStore } from "src/store/useShopStore"
 import { v4 as uuidv4 } from "uuid"
@@ -19,21 +19,37 @@ import styles from "./HomePage.module.css"
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { products, error, isLoading } = useShopStore()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const { products, error, isLoading, isFetching, init } = useShopStore()
   const [busyId, setBusyId] = useState<string | undefined>(undefined)
+
+  const searchParam = searchParams.get("search") || ""
+  const categoryParam = searchParams.get("category") || ""
+
+  useEffect(() => {
+    init(searchParam, categoryParam)
+  }, [searchParam, categoryParam, init])
 
   const chips = useMemo(
     () => [
-      { label: "Донат", icon: <img src={filterIcons.donate} alt="" loading="lazy" decoding="async" /> },
-      { label: "Подписки", icon: <img src={filterIcons.subscribes} alt="" loading="lazy" decoding="async" /> },
-      { label: "Предметы", icon: <img src={filterIcons.items} alt="" loading="lazy" decoding="async" /> },
-      { label: "Аккаунты", icon: <img src={filterIcons.accounts} alt="" loading="lazy" decoding="async" /> },
-      { label: "Ключи", icon: <img src={filterIcons.keys} alt="" loading="lazy" decoding="async" /> },
-      { label: "Игровая валюта", icon: <img src={filterIcons.game_valut} alt="" loading="lazy" decoding="async" /> },
-      { label: "Другое", icon: <img src={filterIcons.other} alt="" loading="lazy" decoding="async" /> }
+      { id: "donate", label: "Донат", icon: <img src={filterIcons.donate} alt="" loading="lazy" decoding="async" /> },
+      { id: "subscribes", label: "Подписки", icon: <img src={filterIcons.subscribes} alt="" loading="lazy" decoding="async" /> },
+      { id: "items", label: "Предметы", icon: <img src={filterIcons.items} alt="" loading="lazy" decoding="async" /> },
+      { id: "accounts", label: "Аккаунты", icon: <img src={filterIcons.accounts} alt="" loading="lazy" decoding="async" /> },
+      { id: "keys", label: "Ключи", icon: <img src={filterIcons.keys} alt="" loading="lazy" decoding="async" /> },
+      { id: "game_valut", label: "Игровая валюта", icon: <img src={filterIcons.game_valut} alt="" loading="lazy" decoding="async" /> },
+      { id: "other", label: "Другое", icon: <img src={filterIcons.other} alt="" loading="lazy" decoding="async" /> }
     ],
     []
   )
+
+  const toggleCategory = (id: string) => {
+    setSearchParams(prev => {
+      if (prev.get("category") === id) prev.delete("category")
+      else prev.set("category", id)
+      return prev
+    })
+  }
 
   const onBuy = useCallback(
     async (productId: string) => {
@@ -48,13 +64,11 @@ export default function HomePage() {
             if (stored.orderId && stored.expiresAt) {
               const expires = new Date(stored.expiresAt).getTime()
               if (expires > Date.now()) {
-                // Active order still exists and not expired!
                 navigate(`/checkout/${stored.orderId}`)
                 return
               }
             }
           } catch (e) {
-            // ignore JSON parse error
           }
         }
 
@@ -73,6 +87,8 @@ export default function HomePage() {
     [navigate]
   )
 
+  const isFiltered = !!searchParam || !!categoryParam
+
   return (
     <div className={styles.page}>
       <Header />
@@ -85,17 +101,27 @@ export default function HomePage() {
         </div>
 
         <div className={styles.filtersRow}>
-          <h2 className={styles.sectionTitle}>Популярные товары</h2>
+          <h2 className={styles.sectionTitle}>Каталог товаров</h2>
+
           <div className={styles.chips} aria-label="Фильтры">
-            {chips.map((c, i) => (
-              <Chip key={c.label} icon={c.icon} active={i === 0}>
-                {c.label}
-              </Chip>
+            {categoryParam && (
+              <div onClick={() => toggleCategory(categoryParam)}>
+                <Chip active={false}>
+                  ✕ Сбросить
+                </Chip>
+              </div>
+            )}
+            {chips.map((c) => (
+              <div key={c.id} onClick={() => toggleCategory(c.id)}>
+                <Chip icon={c.icon} active={categoryParam === c.id}>
+                  {c.label}
+                </Chip>
+              </div>
             ))}
           </div>
         </div>
 
-        <div className={styles.state}>
+        <div className={styles.state} style={{ opacity: isFetching ? 0.6 : 1, transition: "opacity 0.2s ease" }}>
           {error ? (
             <div className={styles.errorBox} role="alert">
               <div className={styles.errorTitle}>Something went wrong</div>
@@ -106,38 +132,32 @@ export default function HomePage() {
             </div>
           ) : null}
 
-          {isLoading && products.length === 0 ? <SkeletonGrid /> : null}
+          {isLoading ? <SkeletonGrid /> : null}
 
           {!error && !isLoading && products.length === 0 ? (
-            <div className={styles.errorBox}>No products</div>
+            <div className={styles.errorBox}>Ничего не найдено по вашему запросу.</div>
           ) : null}
 
-          {products.length > 0 ? (
-            <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
+          {products.length > 0 && isFiltered ? (
+            <ProductGrid products={products} onBuy={onBuy} busyId={busyId} />
           ) : null}
-        </div>
 
-        <div className={styles.sectionHeaderRow}>
-          <h2 className={styles.sectionTitle}>Рекомендованные товары</h2>
-          <button className={styles.showAllBtn}>Показать все</button>
-        </div>
+          {products.length > 0 && !isFiltered ? (
+            <>
+              <ProductGrid products={products.slice(0, 4)} onBuy={onBuy} busyId={busyId} />
 
-        <div className={styles.state}>
-          {isLoading && products.length === 0 ? <SkeletonGrid /> : null}
-          {products.length > 0 ? (
-            <ProductGrid products={products.slice(4, 8)} onBuy={onBuy} busyId={busyId} />
-          ) : null}
-        </div>
+              <div className={styles.sectionHeaderRow} style={{ marginTop: 40 }}>
+                <h2 className={styles.sectionTitle}>Рекомендованные товары</h2>
+                <button className={styles.showAllBtn}>Показать все</button>
+              </div>
+              <ProductGrid products={products.slice(4, 8)} onBuy={onBuy} busyId={busyId} />
 
-        <div className={styles.sectionHeaderRow}>
-          <h2 className={styles.sectionTitle}>Другие товары</h2>
-          <button className={styles.showAllBtn}>Показать все</button>
-        </div>
-
-        <div className={styles.state}>
-          {isLoading && products.length === 0 ? <SkeletonGrid /> : null}
-          {products.length > 0 ? (
-            <ProductGrid products={products.slice(8, 12)} onBuy={onBuy} busyId={busyId} />
+              <div className={styles.sectionHeaderRow} style={{ marginTop: 40 }}>
+                <h2 className={styles.sectionTitle}>Другие товары</h2>
+                <button className={styles.showAllBtn}>Показать все</button>
+              </div>
+              <ProductGrid products={products.slice(8, 12)} onBuy={onBuy} busyId={busyId} />
+            </>
           ) : null}
         </div>
 
@@ -147,4 +167,3 @@ export default function HomePage() {
     </div>
   )
 }
-

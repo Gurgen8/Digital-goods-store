@@ -20,6 +20,26 @@
   justify-content: space-between;
   margin-top: 32px;
   gap: 16px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid var(--color-stroke);
+  background: var(--color-surface);
+  padding: 0 16px;
+  color: var(--color-surface-2);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent);
 }
 
 .sectionTitle {

@@ -1,7 +1,16 @@
 import type { MoneyCurrency, Order, Product } from "@repo/shared"
 import { requestJson } from "./client"
 
-export const getProducts = () => requestJson<Product[]>("/api/products")
+export const getProducts = (search?: string, category?: string, signal?: AbortSignal) => {
+  const params = new URLSearchParams()
+  if (search) params.append("search", search)
+  if (category) params.append("category", category)
+  
+  const queryString = params.toString()
+  const url = queryString ? `/api/products?${queryString}` : "/api/products"
+  
+  return requestJson<Product[]>(url, { signal })
+}
 
 export const createOrder = (productId: string, idempotencyKey?: string) =>
   requestJson<{ orderId: string; expiresAt: string }>("/api/orders", {

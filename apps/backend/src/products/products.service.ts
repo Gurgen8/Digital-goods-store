@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ILike, FindOptionsWhere } from 'typeorm';
 import { ProductEntity } from '@/database/entities/product.entity';
 import { InventoryEntity } from '@/database/entities/inventory.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -15,8 +15,17 @@ export class ProductsService {
     private readonly eventEmitter: EventEmitter2,
   ) { }
 
-  async findAll() {
+  async findAll(search?: string, category?: string) {
+    const where: FindOptionsWhere<ProductEntity> = {};
+    if (search) {
+      where.name = ILike(`%${search}%`);
+    }
+    if (category) {
+      where.category = category;
+    }
+
     const products = await this.productRepo.find({
+      where,
       order: {
         createdAt: 'ASC'
       }
@@ -48,7 +57,7 @@ export class ProductsService {
     }
 
     if (data.price !== undefined || data.oldPrice !== undefined) {
-      const updateData: any = {};
+      const updateData: Partial<ProductEntity> = {};
       if (data.price !== undefined) updateData.price = data.price;
       if (data.oldPrice !== undefined) updateData.oldPrice = data.oldPrice;
       await this.productRepo.update({ sku }, updateData);

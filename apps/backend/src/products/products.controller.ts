@@ -1,9 +1,9 @@
-import { Controller, Get, Sse, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Sse, Post, Body, Param, Query } from '@nestjs/common';
 import { ProductsService } from '@/products/products.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Observable, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('products')
 @Controller('api/products')
@@ -14,12 +14,18 @@ export class ProductsController {
   ) { }
 
   @Get()
-  async getProducts() {
-    const products = await this.productsService.findAll();
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({ name: 'category', required: false, type: String })
+  async getProducts(
+    @Query('search') search?: string,
+    @Query('category') category?: string,
+  ) {
+    const products = await this.productsService.findAll(search, category);
     return products.map(p => ({
       id: p.id,
       title: p.name,
       subtitle: p.subtitle,
+      category: p.category,
       priceRub: p.price,
       oldPriceRub: p.oldPrice,
       imageUrl: p.image,
@@ -30,8 +36,8 @@ export class ProductsController {
   @Sse('stream')
   streamProducts(): Observable<MessageEvent> {
     return fromEvent(this.eventEmitter, 'product.updated').pipe(
-      map((payload: any) => {
-        return { data: payload } as MessageEvent;
+      map((payload: unknown) => {
+        return { data: payload as { sku: string } } as MessageEvent;
       })
     );
   }
